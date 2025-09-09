@@ -94,7 +94,8 @@ public static class GameAI
         return true;
     }
 
-    // 게임 승리 확인
+    // 게임 승리 확인 <- 3x3 틱택토용이라서 (0,0),(0,1),(0,2) 이런 식으로 고정 인덱스만 체크
+    /*
     public static bool CheckGameWin(Constants.PlayerType playerType, Constants.PlayerType[,] board)
     {
         // Col 체크 후 일자면 True
@@ -133,7 +134,84 @@ public static class GameAI
         }
         return false;
     }
+    */
+    public static bool CheckGameWin(Constants.PlayerType playerType, Constants.PlayerType[,] board)
+    {
+        int size = board.GetLength(0);
+        int winLength = 5;
 
+        // 1) 가로 체크
+        for (int r = 0; r < size; r++)
+        {
+            int count = 0;
+            for (int c = 0; c < size; c++)
+            {
+                if (board[r, c] == playerType)
+                {
+                    count++;
+                    if (count >= winLength) return true;
+                }
+                else
+                {
+                    count = 0;
+                }
+            }
+        }
+
+        // 2) 세로 체크
+        for (int c = 0; c < size; c++)
+        {
+            int count = 0;
+            for (int r = 0; r < size; r++)
+            {
+                if (board[r, c] == playerType)
+                {
+                    count++;
+                    if (count >= winLength) return true;
+                }
+                else
+                {
+                    count = 0;
+                }
+            }
+        }
+
+        // 3) ↘ 대각선 체크
+        for (int r = 0; r <= size - winLength; r++)
+        {
+            for (int c = 0; c <= size - winLength; c++)
+            {
+                int count = 0;
+                for (int i = 0; i < winLength && r + i < size && c + i < size; i++)
+                {
+                    if (board[r + i, c + i] == playerType)
+                        count++;
+                    else
+                        break;
+                }
+                if (count >= winLength) return true;
+            }
+        }
+
+        // 4) ↙ 대각선 체크
+        for (int r = 0; r <= size - winLength; r++)
+        {
+            for (int c = winLength - 1; c < size; c++)
+            {
+                int count = 0;
+                for (int i = 0; i < winLength && r + i < size && c - i >= 0; i++)
+                {
+                    if (board[r + i, c - i] == playerType)
+                        count++;
+                    else
+                        break;
+                }
+                if (count >= winLength) return true;
+            }
+        }
+
+        return false;
+    }
 
 
 

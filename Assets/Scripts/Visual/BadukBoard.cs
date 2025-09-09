@@ -4,12 +4,13 @@ using DG.Tweening;
 
 public class BadukBoard : MonoBehaviour
 {
-    public int size = 19;              // 바둑판 격자 수 (19x19)
-    public float spacing = 1f;         // 칸 간격
+    public int size = 14;              // 바둑판 격자 수 (14x14)
+    public float spacing = 0.4f;         // 칸 간격
     public Material lineMaterial;      // Unlit/Color 같은 단색 머티리얼 권장
     public Material effectMaterial;      // Unlit/Color 같은 단색 머티리얼 권장
     public float pingPongDuration = 0.5f;
 
+    public float lineWidth = 0.05f;
     private bool _effectLine;
     void Start()
     {
@@ -26,14 +27,14 @@ public class BadukBoard : MonoBehaviour
             // 수평선: X축으로 뻗고 Y는 위아래로 배치
             Vector3 hCenter = new Vector3(0f, (i * spacing) - half, 0f);
             Vector3 hDir = new Vector3((size - 1) * spacing, 0f, 0f);
-            CreateLine(hCenter, hDir, (size - 1) * spacing, 0.025f, lineMaterial, false);
-            CreateLine(hCenter, hDir, (size - 1) * spacing, 0.05f, effectMaterial, true);
+            CreateLine(hCenter, hDir, (size - 1) * spacing, lineWidth, lineMaterial, false);
+           // CreateLine(hCenter, hDir, (size - 1) * spacing, 0.05f, effectMaterial, true);
 
             // 수직선: Y축으로 뻗고 X는 좌우로 배치
             Vector3 vCenter = new Vector3((i * spacing) - half, 0f, 0f);
             Vector3 vDir = new Vector3(0f, (size - 1) * spacing, 0f);
-            CreateLine(vCenter, vDir, (size - 1) * spacing, 0.025f, lineMaterial, false);
-            CreateLine(vCenter, vDir, (size - 1) * spacing, 0.05f, effectMaterial, true);
+            CreateLine(vCenter, vDir, (size - 1) * spacing, lineWidth, lineMaterial, false);
+           // CreateLine(vCenter, vDir, (size - 1) * spacing, 0.05f, effectMaterial, true);
         }
     }
 
@@ -42,14 +43,11 @@ public class BadukBoard : MonoBehaviour
         GameObject lineObj = new GameObject("Line");
         lineObj.transform.parent = transform;
         lineObj.transform.localPosition = centerLocalPos; // 부모(보드)의 중심 기준 위치
-        if (effectLine)
-        {
-            lineObj.transform.localPosition += new Vector3(0, 0, -0.002f); // 카메라 기준 살짝 앞으로
-        }
+        
         LineRenderer lr = lineObj.AddComponent<LineRenderer>();
         lr.positionCount = 2;
         lr.material = new Material(newMaterial); // 인스턴스 만들어서 각 라인 독립 색상 가능
-        lr.startWidth = width;  // 굵기 절반
+        lr.startWidth = width;  // 굵기
         lr.endWidth = width;
         lr.useWorldSpace = false; // 로컬 좌표 기준
 
@@ -63,6 +61,7 @@ public class BadukBoard : MonoBehaviour
 
         if (effectLine)
         {
+            lineObj.transform.localPosition += new Vector3(0, 0, -0.002f); // 카메라 기준 살짝 앞으로
             // DOTween으로 material.color PingPong
             lr.material.color = Color.black;
             DOTween.To(() => lr.material.color, x => lr.material.color = x, Color.white, pingPongDuration)

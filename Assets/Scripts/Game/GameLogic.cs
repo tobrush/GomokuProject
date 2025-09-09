@@ -99,13 +99,13 @@ public class GameLogic
         if (playerType == Constants.PlayerType.PlayerA)
         {
             _board[row, col] = playerType;
-            BlockController.PlaceMaker(Block.MarkerType.O, row, col);
+            BlockController.PlaceMaker(Block.MarkerType.BlackStone, row, col);
             return true;
         }
         else if (playerType == Constants.PlayerType.PlayerB)
         {
             _board[row, col] = playerType;
-            BlockController.PlaceMaker(Block.MarkerType.X, row, col);
+            BlockController.PlaceMaker(Block.MarkerType.WhiteStone, row, col);
             return true;
         }
         return false;

@@ -8,8 +8,8 @@ using static ConfirmPanelController;
 [RequireComponent(typeof(SpriteRenderer))]
 public class Block : MonoBehaviour
 {
-    [SerializeField] private Sprite oSprite;
-    [SerializeField] private Sprite xSprite;
+    [SerializeField] private Sprite BlackStoneSprite;
+    [SerializeField] private Sprite WhiteStoneSprite;
     [SerializeField] private SpriteRenderer makerSpriteRender; // maker SR
 
 
@@ -17,7 +17,7 @@ public class Block : MonoBehaviour
 
     private OnBlockClicked _onBlockClicked;
 
-    public enum MarkerType { None, O, X }
+    public enum MarkerType { None, BlackStone, WhiteStone }
 
     private int _blockIndex;
 
@@ -58,11 +58,13 @@ public class Block : MonoBehaviour
             case MarkerType.None:
                 makerSpriteRender.sprite = null;
                 break;
-            case MarkerType.O:
-                makerSpriteRender.sprite = oSprite;
+            case MarkerType.BlackStone:
+                makerSpriteRender.sprite = BlackStoneSprite;
+                makerSpriteRender.size = new Vector2(0.3f, 0.3f);
                 break;
-            case MarkerType.X:
-                makerSpriteRender.sprite = xSprite;
+            case MarkerType.WhiteStone:
+                makerSpriteRender.sprite = WhiteStoneSprite;
+                makerSpriteRender.size = new Vector2(0.3f, 0.3f);
                 break;
 
         }

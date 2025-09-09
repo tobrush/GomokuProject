@@ -33,7 +33,7 @@ public class GameManager : Singleton<GameManager>
 
         if (string.IsNullOrEmpty(sid))
         {
-            multiPlayBtn.GetComponent<Button>().interactable = false;
+           // multiPlayBtn.GetComponent<Button>().interactable = false;
         }
     }
 

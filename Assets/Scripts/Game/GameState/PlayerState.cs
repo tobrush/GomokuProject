@@ -30,7 +30,7 @@ public class PlayerState : BasePlayerState
 
     public override void OnEnter(GameLogic gameLogic)
     {
-        Debug.Log($"[PlayerState] OnEnter called, isFirst:{_isFirstPlayer}, isMultiplay:{_isMultiplay}");
+       // Debug.Log($"[PlayerState] OnEnter called, isFirst:{_isFirstPlayer}, isMultiplay:{_isMultiplay}");
      
 
         if (_isFirstPlayer)
@@ -56,7 +56,7 @@ public class PlayerState : BasePlayerState
     public override void HandleMove(GameLogic gameLogic, int row, int col)
     {
         ProcessMove(gameLogic, _playerType, row, col);
-        Debug.Log($"[PlayerState] HandleMove called, row:{row}, col:{col}, isMultiplay:{_isMultiplay}, roomId:{_roomId}");
+        //Debug.Log($"[PlayerState] HandleMove called, row:{row}, col:{col}, isMultiplay:{_isMultiplay}, roomId:{_roomId}");
         if (_isMultiplay)   // 서버에 Marker 정보 전달
         {
             Debug.Log("[PlayerState] Sending DoPlayer to server");

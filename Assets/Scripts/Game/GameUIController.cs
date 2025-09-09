@@ -15,13 +15,24 @@ public class GameUIController : MonoBehaviour
     {
         if (TopText == null)
         {
-            Debug.LogError("TopText is not assigned in the inspector!");
-            Debug.LogError($"TopText is not assigned! Object: {gameObject.name}");
-
             return;
         }
 
-        TopText.text = GameManager.Instance._gameType.ToString();
+        switch(GameManager.Instance._gameType)
+        {
+            case Constants.GameType.SinglePlay:
+            TopText.text = "싱글 플레이";
+            break;
+            case Constants.GameType.DualPlay:
+            TopText.text = "듀얼 플레이";
+            break;
+            case Constants.GameType.MultiPlay:
+            TopText.text = "멀티 플레이";
+            break;
+
+        }
+
+        //TopText.text = GameManager.Instance._gameType.ToString();
     }
 
 
