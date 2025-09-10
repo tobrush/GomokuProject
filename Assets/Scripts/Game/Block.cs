@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using static Block;
@@ -10,7 +11,9 @@ public class Block : MonoBehaviour
 {
     [SerializeField] private Sprite BlackStoneSprite;
     [SerializeField] private Sprite WhiteStoneSprite;
+    [SerializeField] private Sprite ArrowSprite;
     [SerializeField] private SpriteRenderer makerSpriteRender; // maker SR
+    public SpriteRenderer nowSpriteRender; // arrow SR
 
 
     public delegate void OnBlockClicked(int index);
@@ -57,13 +60,16 @@ public class Block : MonoBehaviour
         {
             case MarkerType.None:
                 makerSpriteRender.sprite = null;
+                nowSpriteRender.sprite = null;
                 break;
             case MarkerType.BlackStone:
                 makerSpriteRender.sprite = BlackStoneSprite;
+                nowSpriteRender.sprite = ArrowSprite;
                 makerSpriteRender.size = new Vector2(0.3f, 0.3f);
                 break;
             case MarkerType.WhiteStone:
                 makerSpriteRender.sprite = WhiteStoneSprite;
+                nowSpriteRender.sprite = ArrowSprite;
                 makerSpriteRender.size = new Vector2(0.3f, 0.3f);
                 break;
 

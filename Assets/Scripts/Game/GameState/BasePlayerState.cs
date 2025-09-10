@@ -18,6 +18,7 @@ public abstract class BasePlayerState
             if (gameResult == GameLogic.GameResult.None)
             {
                 HandleNextTurn(gameLogic);
+
             }
             else
             {

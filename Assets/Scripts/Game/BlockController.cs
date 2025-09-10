@@ -48,6 +48,18 @@ public class BlockController : MonoBehaviour
         }
 
     }
+    public void SetOffArrow()
+    {
+        for (int i = 0; i < blocks.Length; i++)
+        {
+            if (blocks[i].nowSpriteRender.sprite != null)
+            {
+                blocks[i].nowSpriteRender.sprite = null;
+            }
+          
+        }
+    }
+
 
     public void InitBlocks()
     {
