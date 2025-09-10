@@ -7,6 +7,8 @@ public class BlockController : MonoBehaviour
 {
     [SerializeField] private Block[] blocks;
 
+    public Block LastBlock;
+
     public GameObject blockPrefab;
 
     public BadukBoard board;
@@ -48,22 +50,9 @@ public class BlockController : MonoBehaviour
         }
 
     }
-    public void SetOffArrow()
-    {
-        for (int i = 0; i < blocks.Length; i++)
-        {
-            if (blocks[i].nowSpriteRender.sprite != null)
-            {
-                blocks[i].nowSpriteRender.sprite = null;
-            }
-          
-        }
-    }
-
 
     public void InitBlocks()
     {
-        
 
         for (int i = 0; i < blocks.Length; i++)
         {
@@ -78,9 +67,17 @@ public class BlockController : MonoBehaviour
     }
     public void PlaceMaker(Block.MarkerType markerType, int row, int col)
     {
+        if (LastBlock != null)
+        {
+            if (LastBlock.nowSpriteRender.sprite != null)
+            {
+                LastBlock.nowSpriteRender.sprite = null;
+            }
+        }
         // row, col >> index º¯È¯
         var blockIndex = row * Constants.BlockColumnCount + col;
         blocks[blockIndex].SetMarker(markerType);
+        LastBlock = blocks[blockIndex];
     }
 
     public void SetBlockColor()

@@ -97,7 +97,6 @@ public class GameLogic
 
         if (playerType == Constants.PlayerType.PlayerA)
         {
-            BlockController.SetOffArrow();
             _board[row, col] = playerType;
             BlockController.PlaceMaker(Block.MarkerType.BlackStone, row, col);
        
@@ -105,7 +104,6 @@ public class GameLogic
         }
         else if (playerType == Constants.PlayerType.PlayerB)
         {
-            BlockController.SetOffArrow();
             _board[row, col] = playerType;
             BlockController.PlaceMaker(Block.MarkerType.WhiteStone, row, col);
            
