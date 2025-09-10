@@ -4,17 +4,23 @@ using DG.Tweening;
 
 public class BadukBoard : MonoBehaviour
 {
-    public int size = 15;              // 바둑판 격자 수 (14x14)
+    public int size = Constants.BlockColumnCount;              // 바둑판 격자 수 
     public float spacing = 0.35f;         // 칸 간격
     public Material lineMaterial;      // Unlit/Color 같은 단색 머티리얼 권장
     public Material effectMaterial;      // Unlit/Color 같은 단색 머티리얼 권장
     public float pingPongDuration = 5f;
 
     public float lineWidth = 0.05f;
+    public float borderLineWidth = 0.1f;
     private bool _effectLine;
+
+    public float dotRadius = 0.08f;
+
     void Start()
     {
+        size = Constants.BlockColumnCount;
         DrawBoard();
+        DrawDotPoints();
     }
 
     void DrawBoard()
@@ -27,13 +33,17 @@ public class BadukBoard : MonoBehaviour
             // 수평선: X축으로 뻗고 Y는 위아래로 배치
             Vector3 hCenter = new Vector3(0f, (i * spacing) - half, 0f);
             Vector3 hDir = new Vector3((size - 1) * spacing, 0f, 0f);
-            CreateLine(hCenter, hDir, (size - 1) * spacing, lineWidth, lineMaterial, false);
+
+            bool isBorder = (i == 0 || i == size - 1);
+            CreateLine(hCenter, hDir, (size - 1) * spacing, isBorder ? borderLineWidth : lineWidth, lineMaterial, false);
            // CreateLine(hCenter, hDir, (size - 1) * spacing, 0.05f, effectMaterial, true);
 
             // 수직선: Y축으로 뻗고 X는 좌우로 배치
             Vector3 vCenter = new Vector3((i * spacing) - half, 0f, 0f);
             Vector3 vDir = new Vector3(0f, (size - 1) * spacing, 0f);
-            CreateLine(vCenter, vDir, (size - 1) * spacing, lineWidth, lineMaterial, false);
+
+            isBorder = (i == 0 || i == size - 1);
+            CreateLine(vCenter, vDir, (size - 1) * spacing, isBorder ? borderLineWidth : lineWidth, lineMaterial, false);
            // CreateLine(vCenter, vDir, (size - 1) * spacing, 0.05f, effectMaterial, true);
         }
     }
@@ -84,5 +94,35 @@ public class BadukBoard : MonoBehaviour
             .SetEase(Ease.Linear);
         }
         
+    }
+    void DrawDotPoints()
+    {
+        float half = (size - 1) * spacing * 0.5f;
+
+        // 3, 정가운데, 끝에서 -3  
+        // 19x19 기준 화점 위치 (3, 9, 15 줄)
+        int[] dotIndex = { 0, 3, size / 2, size - 4, size -1 };
+
+        foreach (int i in dotIndex)
+        {
+            foreach (int j in dotIndex)
+            {
+                Vector3 pos = new Vector3((i * spacing) - half, (j * spacing) - half, 0.05f); // 살짝 뒤로 배치
+                CreateDot(pos);
+            }
+        }
+    }
+
+    void CreateDot(Vector3 localPos)
+    {
+        GameObject dot = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        dot.name = "Dot";
+        dot.transform.parent = transform;
+        dot.transform.localPosition = localPos;
+        dot.transform.localScale = new Vector3(dotRadius, dotRadius, dotRadius);
+
+        Renderer r = dot.GetComponent<Renderer>();
+        r.material = new Material(Shader.Find("Unlit/Color"));
+        r.material.color = Color.black;
     }
 }
