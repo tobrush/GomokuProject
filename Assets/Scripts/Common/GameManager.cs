@@ -25,7 +25,7 @@ public class GameManager : Singleton<GameManager>
 
     private GameUIController _gameUIController;
 
-    private void OnEnable()
+    private void Start()
     {
         // ·Î±×ÀÎ
         var sid = PlayerPrefs.GetString("sid");
@@ -33,7 +33,7 @@ public class GameManager : Singleton<GameManager>
 
         if (string.IsNullOrEmpty(sid))
         {
-           // multiPlayBtn.GetComponent<Button>().interactable = false;
+            multiPlayBtn.GetComponent<Button>().interactable = false;
         }
     }
 

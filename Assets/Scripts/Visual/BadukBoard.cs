@@ -4,7 +4,7 @@ using DG.Tweening;
 
 public class BadukBoard : MonoBehaviour
 {
-    public int size = Constants.BlockColumnCount;              // 바둑판 격자 수 
+    public int size = 13;              // 바둑판 격자 수 
     public float spacing = 0.35f;         // 칸 간격
     public Material lineMaterial;      // Unlit/Color 같은 단색 머티리얼 권장
     public Material effectMaterial;      // Unlit/Color 같은 단색 머티리얼 권장
@@ -18,7 +18,7 @@ public class BadukBoard : MonoBehaviour
 
     void Start()
     {
-        size = Constants.BlockColumnCount;
+        //size = Constants.BlockColumnCount;
         DrawBoard();
         DrawDotPoints();
     }
@@ -36,7 +36,7 @@ public class BadukBoard : MonoBehaviour
 
             bool isBorder = (i == 0 || i == size - 1);
             CreateLine(hCenter, hDir, (size - 1) * spacing, isBorder ? borderLineWidth : lineWidth, lineMaterial, false);
-           // CreateLine(hCenter, hDir, (size - 1) * spacing, 0.05f, effectMaterial, true);
+         //  CreateLine(hCenter, hDir, (size - 1) * spacing, 0.05f, effectMaterial, true);
 
             // 수직선: Y축으로 뻗고 X는 좌우로 배치
             Vector3 vCenter = new Vector3((i * spacing) - half, 0f, 0f);
@@ -44,7 +44,7 @@ public class BadukBoard : MonoBehaviour
 
             isBorder = (i == 0 || i == size - 1);
             CreateLine(vCenter, vDir, (size - 1) * spacing, isBorder ? borderLineWidth : lineWidth, lineMaterial, false);
-           // CreateLine(vCenter, vDir, (size - 1) * spacing, 0.05f, effectMaterial, true);
+          // CreateLine(vCenter, vDir, (size - 1) * spacing, 0.05f, effectMaterial, true);
         }
     }
 

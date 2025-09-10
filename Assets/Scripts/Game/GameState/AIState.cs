@@ -35,11 +35,22 @@ public class AIState : BasePlayerState
 
     private IEnumerator AIMoveDelay(GameLogic gameLogic)
     {
+        yield return null;
         GameManager.Instance.SetAILoading(true);
-        yield return new WaitForSeconds(1.0f); // 1.0초 기다림
-        GameManager.Instance.SetAILoading(false);
+
+        float startTime = Time.realtimeSinceStartup;
         var board = gameLogic.GetBoard();
         var result = GameAI.GetBestMove(board);
+
+        float elapsed = Time.realtimeSinceStartup - startTime;
+        float minDelay = 1.0f; // 최소 보장 딜레이
+        float remaining = Mathf.Max(0, minDelay - elapsed);
+
+        // 남은 시간만큼만 기다림
+        yield return new WaitForSeconds(remaining);
+
+        GameManager.Instance.SetAILoading(false);
+
         if (result.HasValue)
         {
             HandleMove(gameLogic, result.Value.row, result.Value.col);
@@ -48,5 +59,6 @@ public class AIState : BasePlayerState
         {
             gameLogic.EndGame(GameLogic.GameResult.Draw);
         }
+        
     }
 }
