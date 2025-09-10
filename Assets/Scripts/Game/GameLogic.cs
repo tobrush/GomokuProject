@@ -88,7 +88,6 @@ public class GameLogic
     {
         _currentPlayerState?.OnExit(this);
         _currentPlayerState = state;
-        Debug.Log("state : " +state);
         _currentPlayerState?.OnEnter(this);
     }
 

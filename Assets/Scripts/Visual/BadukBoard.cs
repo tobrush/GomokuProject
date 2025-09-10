@@ -4,11 +4,11 @@ using DG.Tweening;
 
 public class BadukBoard : MonoBehaviour
 {
-    public int size = 14;              // 바둑판 격자 수 (14x14)
-    public float spacing = 0.4f;         // 칸 간격
+    public int size = 15;              // 바둑판 격자 수 (14x14)
+    public float spacing = 0.35f;         // 칸 간격
     public Material lineMaterial;      // Unlit/Color 같은 단색 머티리얼 권장
     public Material effectMaterial;      // Unlit/Color 같은 단색 머티리얼 권장
-    public float pingPongDuration = 0.5f;
+    public float pingPongDuration = 5f;
 
     public float lineWidth = 0.05f;
     private bool _effectLine;

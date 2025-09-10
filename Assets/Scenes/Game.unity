@@ -784,7 +784,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Player B (White Stone)
+  m_text: "Player B (\uBC31\uB3CC) \uC21C\uC11C"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: e0cf021e6be6a134ca8e9f0a43f30f71, type: 2}
   m_sharedMaterial: {fileID: -3272553414155111923, guid: e0cf021e6be6a134ca8e9f0a43f30f71, type: 2}
@@ -1199,7 +1199,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 30}
-  m_SizeDelta: {x: 142, y: 142}
+  m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1308191184
 MonoBehaviour:
@@ -1495,7 +1495,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Player A (Black Stone)
+  m_text: "Player A (\uD751\uB3CC) \uC21C\uC11C"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: e0cf021e6be6a134ca8e9f0a43f30f71, type: 2}
   m_sharedMaterial: {fileID: -3272553414155111923, guid: e0cf021e6be6a134ca8e9f0a43f30f71, type: 2}

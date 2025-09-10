@@ -17,7 +17,7 @@ public class BlockController : MonoBehaviour
 
     public void Awake()
     {
-        // 배열 초기화
+        // 배열 갯수 초기화
         blocks = new Block[board.size * board.size];
 
         int index = 0;
@@ -29,19 +29,19 @@ public class BlockController : MonoBehaviour
             for (int v = 0; v < board.size; v++)
             {
                 Vector3 pos = new Vector3((v * board.spacing) - half, (h * board.spacing) - half, -0.01f);
-                GameObject slot = Instantiate(blockPrefab, transform);
-                slot.transform.localPosition = pos;
+                GameObject _block = Instantiate(blockPrefab, transform);
+                _block.transform.localPosition = pos;
 
-                slot.name = $"Slot_{h}_{v}";
+                _block.name = $"Block_{h}_{v}";
 
-                Block block = slot.GetComponent<Block>();
+                Block block = _block.GetComponent<Block>();
                 if (block != null)
                 {
                     blocks[index] = block;
                 }
                 else
                 {
-                    Debug.LogWarning($"Block 컴포넌트가 {slot.name}에 없음!");
+                    Debug.LogWarning($"Block 컴포넌트가 {_block.name}에 없음!");
                 }
                 index++;
             }
