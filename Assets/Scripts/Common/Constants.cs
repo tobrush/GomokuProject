@@ -2,8 +2,8 @@ using UnityEngine;
 
 public class Constants : MonoBehaviour
 {
-    public const string ServerURL = "http://localhost:3000";
-    public const string SocketServerURL = "ws://localhost:3000";
+    public const string ServerURL = "https://gomokuprojectserver.onrender.com";
+    public const string SocketServerURL = "wss://gomokuprojectserver.onrender.com";
 
     public enum MultiplayControllerState
     {
