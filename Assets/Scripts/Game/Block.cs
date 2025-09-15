@@ -19,6 +19,7 @@ public class Block : MonoBehaviour
     public delegate void OnBlockClicked(int index);
 
     private OnBlockClicked _onBlockClicked;
+    
 
     public enum MarkerType { None, BlackStone, WhiteStone }
 
@@ -41,7 +42,7 @@ public class Block : MonoBehaviour
         SetMarker(MarkerType.None);
 
 
-        _onBlockClicked = onBlockClicked; // ³»ºÎ ÇÊµå ÀúÀå
+        _onBlockClicked = onBlockClicked; // ë‚´ë¶€ í•„ë“œ ì €ìž¥
         
         StartCoroutine(DelayInit());
 
@@ -49,7 +50,7 @@ public class Block : MonoBehaviour
     }
     private IEnumerator DelayInit()
     {
-        yield return null; // 1ÇÁ·¹ÀÓ ´ë±â
+        yield return null; // 1í”„ë ˆìž„ ëŒ€ê¸°
      
         SetBlockColor(_defalutBlockColor);
     }
