@@ -12,6 +12,8 @@ public class Block : MonoBehaviour
     [SerializeField] private Sprite BlackStoneSprite;
     [SerializeField] private Sprite WhiteStoneSprite;
     [SerializeField] private Sprite ArrowSprite;
+    [SerializeField] private Sprite AimSprite;
+    [SerializeField] private Sprite BanPositionSprite;
     [SerializeField] private SpriteRenderer makerSpriteRender; // maker SR
     public SpriteRenderer nowSpriteRender; // arrow SR
 
@@ -21,7 +23,7 @@ public class Block : MonoBehaviour
     private OnBlockClicked _onBlockClicked;
     
 
-    public enum MarkerType { None, BlackStone, WhiteStone }
+    public enum MarkerType { None, BlackStone, WhiteStone, Aim, Ban }
 
     private int _blockIndex;
 
@@ -61,17 +63,30 @@ public class Block : MonoBehaviour
         {
             case MarkerType.None:
                 makerSpriteRender.sprite = null;
+                makerSpriteRender.color = Color.white;
                 nowSpriteRender.sprite = null;
                 break;
             case MarkerType.BlackStone:
                 makerSpriteRender.sprite = BlackStoneSprite;
+                makerSpriteRender.color = Color.white;
                 nowSpriteRender.sprite = ArrowSprite;
                 makerSpriteRender.size = new Vector2(0.3f, 0.3f);
                 break;
             case MarkerType.WhiteStone:
                 makerSpriteRender.sprite = WhiteStoneSprite;
+                makerSpriteRender.color = Color.white;
                 nowSpriteRender.sprite = ArrowSprite;
                 makerSpriteRender.size = new Vector2(0.3f, 0.3f);
+                break;
+            case MarkerType.Aim:
+                makerSpriteRender.sprite = AimSprite;
+                makerSpriteRender.color = Color.green;
+                nowSpriteRender.sprite = null;
+                break;
+            case MarkerType.Ban:
+                makerSpriteRender.sprite = BanPositionSprite;
+                makerSpriteRender.color = Color.white;
+                nowSpriteRender.sprite = null;
                 break;
 
         }

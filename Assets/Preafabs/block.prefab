@@ -105,6 +105,8 @@ MonoBehaviour:
   BlackStoneSprite: {fileID: 21300000, guid: 82607f547aebd6343909171911decc01, type: 3}
   WhiteStoneSprite: {fileID: 21300000, guid: 1487e06dfd460fe4789b72293b81660a, type: 3}
   ArrowSprite: {fileID: 21300000, guid: 14a8ec6df094e1b479ba4d2544f979fd, type: 3}
+  AimSprite: {fileID: 21300000, guid: 77ea3e434b080f9428280667f4a75c65, type: 3}
+  BanPositionSprite: {fileID: 21300000, guid: 9aa145f45e6130d428f340b117a1bbac, type: 3}
   makerSpriteRender: {fileID: 8926653218297458376}
   nowSpriteRender: {fileID: 2040700066775830663}
   _spriteRenderer: {fileID: 8926653218297458376}

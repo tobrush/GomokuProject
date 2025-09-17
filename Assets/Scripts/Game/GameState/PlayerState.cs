@@ -54,10 +54,7 @@ public class PlayerState : BasePlayerState
                 lastPreviewBlock.SetMarker(Block.MarkerType.None);
 
             // 새 위치에 임시 돌 표시
-            gameLogic.BlockController.PlaceMaker(
-                _playerType == Constants.PlayerType.PlayerA ? Block.MarkerType.BlackStone : Block.MarkerType.WhiteStone,
-                row, col
-            );
+            gameLogic.BlockController.PlaceMaker( Block.MarkerType.Aim ,row, col);
 
             // 현재 표시된 블록 저장
             int blockIndex = row * Constants.BlockColumnCount + col;
