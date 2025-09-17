@@ -19,7 +19,7 @@ public class BlockController : MonoBehaviour
 
     public void Awake()
     {
-        // ¹è¿­ °¹¼ö ÃÊ±âÈ­
+        // ë°°ì—´ ê°¯ìˆ˜ ì´ˆê¸°í™”
         blocks = new Block[board.size * board.size];
 
         int index = 0;
@@ -43,7 +43,7 @@ public class BlockController : MonoBehaviour
                 }
                 else
                 {
-                    Debug.LogWarning($"Block ÄÄÆ÷³ÍÆ®°¡ {_block.name}¿¡ ¾øÀ½!");
+                    Debug.LogWarning($"Block ì»´í¬ë„ŒíŠ¸ê°€ {_block.name}ì— ì—†ìŒ!");
                 }
                 index++;
             }
@@ -74,7 +74,7 @@ public class BlockController : MonoBehaviour
                 LastBlock.nowSpriteRender.sprite = null;
             }
         }
-        // row, col >> index º¯È¯
+        // row, col >> index ë³€í™˜
         var blockIndex = row * Constants.BlockColumnCount + col;
         blocks[blockIndex].SetMarker(markerType);
         LastBlock = blocks[blockIndex];
@@ -82,6 +82,14 @@ public class BlockController : MonoBehaviour
 
     public void SetBlockColor()
     {
-        //TODO : °ÔÀÓ·ÎÁ÷ÀÌ ¿Ï¼ºµÇ¸é ±¸Çö
+        //TODO : ê²Œì„ë¡œì§ì´ ì™„ì„±ë˜ë©´ êµ¬í˜„
     }
+
+    public Block GetBlock(int index)
+    {
+        if (index >= 0 && index < blocks.Length)
+            return blocks[index];
+        return null;
+    }
+
 }

@@ -12,7 +12,7 @@ public class GameLogic
     public BasePlayerState secondPlayerState; //B
     public enum GameResult { None, Win, Lose, Draw }
 
-    private BasePlayerState _currentPlayerState; //ÇöÀç ÅÏ ÇÃ·¹ÀÌ¾î
+    private BasePlayerState _currentPlayerState; //í˜„ì¬ í„´ í”Œë ˆì´ì–´
 
 
     private MultiplayController _multiplayController;
@@ -31,7 +31,7 @@ public class GameLogic
 
         _board = new Constants.PlayerType[Constants.BlockColumnCount, Constants.BlockColumnCount];
 
-        // Game Type ÃÊ±âÈ­
+        // Game Type ì´ˆê¸°í™”
         switch (gameType)
         {
             case Constants.GameType.SinglePlay:
@@ -43,7 +43,7 @@ public class GameLogic
             case Constants.GameType.DualPlay:
                 firstPlayerState = new PlayerState(true);
                 secondPlayerState = new PlayerState(false);
-                // °ÔÀÓ ½ÃÀÛ
+                // ê²Œì„ ì‹œì‘
                 SetState(firstPlayerState);
                 break;
             case Constants.GameType.MultiPlay:
@@ -55,7 +55,7 @@ public class GameLogic
                     {
                         case Constants.MultiplayControllerState.CreateRoom:
                             Debug.Log("## Create Room ##");
-                            // TODO: ´ë±â È­¸é UI Ç¥½Ã
+                            // TODO: ëŒ€ê¸° í™”ë©´ UI í‘œì‹œ
                             break;
                         case Constants.MultiplayControllerState.JoinRoom:
                             Debug.Log("## Join Room ##");
@@ -71,11 +71,11 @@ public class GameLogic
                             break;
                         case Constants.MultiplayControllerState.ExitRoom:
                             Debug.Log("## Exit Room ##");
-                            // TODO: ÆË¾÷ ¶ç¿ì°í ¸ŞÀÎÈ­¸éÀ¸·Î ÀÌµ¿
+                            // TODO: íŒì—… ë„ìš°ê³  ë©”ì¸í™”ë©´ìœ¼ë¡œ ì´ë™
                             break;
                         case Constants.MultiplayControllerState.EndGame:
                             Debug.Log("## End Game ##");
-                            // TODO: ÆË¾÷ ¶ç¿ì°í ¸ŞÀÎÈ­¸éÀ¸·Î ÀÌµ¿
+                            // TODO: íŒì—… ë„ìš°ê³  ë©”ì¸í™”ë©´ìœ¼ë¡œ ì´ë™
                             break;
                     }
                 });
@@ -127,7 +127,7 @@ public class GameLogic
         secondPlayerState = null;
 
 
-        string resultMessage = "°ÔÀÓ¿À¹ö";
+        string resultMessage = "ê²Œì„ì˜¤ë²„";
 
         switch (GameManager.Instance._gameType)
         {
@@ -136,16 +136,16 @@ public class GameLogic
                 switch (gameResult)
                 {
                     case GameResult.None:
-                        resultMessage = "¿À·ù";
+                        resultMessage = "ì˜¤ë¥˜";
                         break;
                     case GameResult.Win:
-                        resultMessage = "½Â¸®";
+                        resultMessage = "ìŠ¹ë¦¬";
                         break;
                     case GameResult.Lose:
-                        resultMessage = "ÆĞ¹è";
+                        resultMessage = "íŒ¨ë°°";
                         break;
                     case GameResult.Draw:
-                        resultMessage = "ºñ±è";
+                        resultMessage = "ë¹„ê¹€";
                         break;
                 }
                 break;
@@ -153,7 +153,7 @@ public class GameLogic
                 switch (gameResult)
                 {
                     case GameResult.None:
-                        resultMessage = "¿À·ù";
+                        resultMessage = "ì˜¤ë¥˜";
                         break;
                     case GameResult.Win:
                         resultMessage = "A player Win";
@@ -171,16 +171,16 @@ public class GameLogic
                 switch (gameResult)
                 {
                     case GameResult.None:
-                        resultMessage = "¿À·ù";
+                        resultMessage = "ì˜¤ë¥˜";
                         break;
                     case GameResult.Win:
-                        resultMessage = "½Â¸®";
+                        resultMessage = "ìŠ¹ë¦¬";
                         break;
                     case GameResult.Lose:
-                        resultMessage = "ÆĞ¹è";
+                        resultMessage = "íŒ¨ë°°";
                         break;
                     case GameResult.Draw:
-                        resultMessage = "ºñ±è";
+                        resultMessage = "ë¹„ê¹€";
                         break;
                 }*/
                 break;
@@ -195,7 +195,7 @@ public class GameLogic
             });
         }
        
-        //Debug.Log("°ÔÀÓ ¿À¹ö");
+        //Debug.Log("ê²Œì„ ì˜¤ë²„");
     }
 
     public void Dispose()
@@ -203,5 +203,11 @@ public class GameLogic
         _multiplayController?.LeaveRoom(_roomId);
         _multiplayController?.Dispose();
     }
+
+    public BasePlayerState GetCurrentState()
+    {
+        return _currentPlayerState;
+    }
+
 }
 

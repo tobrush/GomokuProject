@@ -10,6 +10,13 @@ public class PlayerState : BasePlayerState
     private string _roomId;
     private bool _isMultiplay;
 
+    // 착수 대기 좌표
+    private int? pendingRow = null;
+    private int? pendingCol = null;
+
+    // 마지막 임시 표시된 블록
+    private Block lastPreviewBlock = null;
+
     public PlayerState(bool isFirstPlayer)
     {
         _isFirstPlayer = isFirstPlayer;
@@ -17,64 +24,83 @@ public class PlayerState : BasePlayerState
             Constants.PlayerType.PlayerA : Constants.PlayerType.PlayerB;
         _isMultiplay = false;
     }
+
     public PlayerState(bool isFirstPlayer, MultiplayController multiplayController, string roomId)
-      : this(isFirstPlayer)
+        : this(isFirstPlayer)
     {
         _multiplayController = multiplayController;
         _roomId = roomId;
         _isMultiplay = true;
     }
 
-    #region �ʼ��޼���
+    #region 필수메서드
 
 
     public override void OnEnter(GameLogic gameLogic)
     {
-       // Debug.Log($"[PlayerState] OnEnter called, isFirst:{_isFirstPlayer}, isMultiplay:{_isMultiplay}");
-     
-
         if (_isFirstPlayer)
-        {
             GameManager.Instance.SetGameTurnPanel(GameUIController.GameTurnPanelType.ATurn);
-        }
         else
-        {
             GameManager.Instance.SetGameTurnPanel(GameUIController.GameTurnPanelType.BTurn);
-        }
 
+        // 공통: 블록 클릭 → 임시 착수 위치 저장
         gameLogic.BlockController.OnBlockClickedDelegate = (row, col) =>
         {
-            HandleMove(gameLogic, row, col);
+            pendingRow = row;
+            pendingCol = col;
+
+            // 기존 임시 돌 지우기
+            if (lastPreviewBlock != null)
+                lastPreviewBlock.SetMarker(Block.MarkerType.None);
+
+            // 새 위치에 임시 돌 표시
+            gameLogic.BlockController.PlaceMaker(
+                _playerType == Constants.PlayerType.PlayerA ? Block.MarkerType.BlackStone : Block.MarkerType.WhiteStone,
+                row, col
+            );
+
+            // 현재 표시된 블록 저장
+            int blockIndex = row * Constants.BlockColumnCount + col;
+            lastPreviewBlock = gameLogic.BlockController.GetBlock(blockIndex);
         };
     }
 
     public override void OnExit(GameLogic gameLogic)
     {
         gameLogic.BlockController.OnBlockClickedDelegate = null;
-
     }
+
     public override void HandleMove(GameLogic gameLogic, int row, int col)
     {
-        ProcessMove(gameLogic, _playerType, row, col);
-        //Debug.Log($"[PlayerState] HandleMove called, row:{row}, col:{col}, isMultiplay:{_isMultiplay}, roomId:{_roomId}");
-        if (_isMultiplay)   // ������ Marker ���� ����
-        {
-            Debug.Log("[PlayerState] Sending DoPlayer to server");
-            _multiplayController.DoPlayer(_roomId, row * Constants.BlockColumnCount + col);
-        }
+        // 버튼 방식 → 여기서는 사용하지 않음
     }
 
+    // 착수 버튼 눌렀을 때 최종 확정
+    public void ConfirmMove(GameLogic gameLogic)
+    {
+        if (pendingRow.HasValue && pendingCol.HasValue)
+        {
+            ProcessMove(gameLogic, _playerType, pendingRow.Value, pendingCol.Value);
+
+            if (_isMultiplay)
+            {
+                _multiplayController.DoPlayer(
+                    _roomId, pendingRow.Value * Constants.BlockColumnCount + pendingCol.Value
+                );
+            }
+
+            pendingRow = null;
+            pendingCol = null;
+            lastPreviewBlock = null; // 임시 돌 초기화
+        }
+    }
 
     protected override void HandleNextTurn(GameLogic gameLogic)
     {
         if (_isFirstPlayer)
-        {
             gameLogic.SetState(gameLogic.secondPlayerState);
-        }
         else
-        {
             gameLogic.SetState(gameLogic.firstPlayerState);
-        }
     }
 
     #endregion

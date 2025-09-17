@@ -21,13 +21,13 @@ public class GameUIController : MonoBehaviour
         switch(GameManager.Instance._gameType)
         {
             case Constants.GameType.SinglePlay:
-            TopText.text = "½Ì±Û ÇÃ·¹ÀÌ";
+            TopText.text = "ì‹±ê¸€ í”Œë ˆì´";
             break;
             case Constants.GameType.DualPlay:
-            TopText.text = "µà¾ó ÇÃ·¹ÀÌ";
+            TopText.text = "ë“€ì–¼ í”Œë ˆì´";
             break;
             case Constants.GameType.MultiPlay:
-            TopText.text = "¸ÖÆ¼ ÇÃ·¹ÀÌ";
+            TopText.text = "ë©€í‹° í”Œë ˆì´";
             break;
 
         }
@@ -45,7 +45,7 @@ public class GameUIController : MonoBehaviour
 
     public void OnClickBackBtn()
     {
-        GameManager.Instance.OpenConfirmPanel(message: "°ÔÀÓÀ» Á¾·áÇÏ½Ã°Ú½À´Ï±î?", onConfirmButtonClicked: () =>
+        GameManager.Instance.OpenConfirmPanel(message: "ê²Œìž„ì„ ì¢…ë£Œí•˜ì‹œê² ìŠµë‹ˆê¹Œ?", onConfirmButtonClicked: () =>
         {
             GameManager.Instance.ChangeToMainScene();
         });
@@ -70,4 +70,23 @@ public class GameUIController : MonoBehaviour
                 break;
         }
     }
+
+    public void OnClickConfirmMove()
+    {
+        if (GameManager.Instance != null)
+        {
+            var gameLogic = typeof(GameManager)
+                .GetField("_gameLogic", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+                .GetValue(GameManager.Instance) as GameLogic;
+
+            if (gameLogic != null)
+            {
+                if (gameLogic.GetCurrentState() is PlayerState playerState)
+                {
+                    playerState.ConfirmMove(gameLogic);
+                }
+            }
+        }
+    }
+
 }
