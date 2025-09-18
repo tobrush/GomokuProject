@@ -102,6 +102,7 @@ public class GameLogic
         // 새 턴이 플레이어 턴일 때만 타이머 시작
         if (_currentPlayerState != null && !(_currentPlayerState is AIState))
         {
+            GameManager.Instance?.InitTurnTimerUI(_turnLimit);
             _turnTimerCoroutine = BlockController.StartCoroutine(TurnTimer());
         }
     }
@@ -121,14 +122,12 @@ public class GameLogic
                     yield return null; // 다음 프레임까지 대기
                 }
             }
+            time -= Time.deltaTime;
 
-            Debug.Log($"[TurnTimer] 남은 시간: {time}초");
             GameManager.Instance?.SetGameTurnTime(time); // UI 갱신
-            yield return new WaitForSeconds(1f);
-            time -= 1f;
-        }
 
-        Debug.Log("[TurnTimer] 시간 초과! 패배 처리 실행");
+            yield return null;
+        }
 
         // 현재 턴인 플레이어 확인
         if (_currentPlayerState is PlayerState playerState)

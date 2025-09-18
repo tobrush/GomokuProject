@@ -12,6 +12,8 @@ public class GameUIController : MonoBehaviour
     [SerializeField] private TMP_Text TopText;
 
     [SerializeField] private TMP_Text turnTimerText;
+    [SerializeField] private Slider turnTimerSlider;
+    private float maxTurnTime;
 
     public void Start()
     {
@@ -96,6 +98,22 @@ public class GameUIController : MonoBehaviour
         if (turnTimerText != null)
         {
             turnTimerText.text = $"{Mathf.CeilToInt(time)}s";
+        }
+
+        if (turnTimerSlider != null)
+        {
+            turnTimerSlider.value = time; // 슬라이더 값 반영
+        }
+    }
+
+    // 제한시간 초기화 시 호출
+    public void InitTurnTimer(float maxTime)
+    {
+        maxTurnTime = maxTime;
+        if (turnTimerSlider != null)
+        {
+            turnTimerSlider.maxValue = maxTime;
+            turnTimerSlider.value = maxTime;
         }
     }
 }

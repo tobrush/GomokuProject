@@ -141,6 +141,12 @@ public class GameManager : Singleton<GameManager>
     {
         _gameUIController?.SetTurnTimer(time);
     }
+
+    public void InitTurnTimerUI(float maxTime)
+    {
+        _gameUIController?.InitTurnTimer(maxTime);
+    }
+
 }
 
 
