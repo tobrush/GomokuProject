@@ -11,6 +11,7 @@ public class ConfirmPanelController : PanelController
     
     public void Show(string message, OnConfirmButtonClicked onConfirmButtonClicked)
     {
+        GameManager.Instance.PauseGame();
         _onConfirmButtonClicked = onConfirmButtonClicked;
         messageText.text = message;
         base.Show();
@@ -27,6 +28,7 @@ public class ConfirmPanelController : PanelController
     public void OnClickCloseBtn()
     {
         Hide();
+        GameManager.Instance.ResumeGame();
     }
 
 }

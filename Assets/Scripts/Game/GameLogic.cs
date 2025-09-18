@@ -96,12 +96,13 @@ public class GameLogic
         // 기존 타이머 멈춤
         if (_turnTimerCoroutine != null)
         {
-            GameManager.Instance.StopCoroutine(_turnTimerCoroutine);
+            BlockController.StopCoroutine(_turnTimerCoroutine);
+            _turnTimerCoroutine = null;
         }
         // 새 턴이 플레이어 턴일 때만 타이머 시작
         if (_currentPlayerState != null && !(_currentPlayerState is AIState))
         {
-            _turnTimerCoroutine = GameManager.Instance.StartCoroutine(TurnTimer());
+            _turnTimerCoroutine = BlockController.StartCoroutine(TurnTimer());
         }
     }
 
@@ -111,6 +112,16 @@ public class GameLogic
 
         while (time >= 0)
         {
+            // 싱글/듀얼일 때만 정지 체크
+            if (GameManager.Instance._gameType != Constants.GameType.MultiPlay)
+            {
+                // 팝업으로 일시정지 중이면 대기
+                while (GameManager.Instance.IsPaused)
+                {
+                    yield return null; // 다음 프레임까지 대기
+                }
+            }
+
             Debug.Log($"[TurnTimer] 남은 시간: {time}초");
             GameManager.Instance?.SetGameTurnTime(time); // UI 갱신
             yield return new WaitForSeconds(1f);
@@ -170,6 +181,14 @@ public class GameLogic
    
     public void EndGame(GameResult gameResult)
     {
+        if (_turnTimerCoroutine != null)
+        {
+            BlockController.StopCoroutine(_turnTimerCoroutine);
+            _turnTimerCoroutine = null;
+        }
+
+
+
         SetState(null);
         firstPlayerState = null;
         secondPlayerState = null;
@@ -248,6 +267,12 @@ public class GameLogic
 
     public void Dispose()
     {
+        if (_turnTimerCoroutine != null)
+        {
+            BlockController.StopCoroutine(_turnTimerCoroutine);
+            _turnTimerCoroutine = null;
+        }
+
         _multiplayController?.LeaveRoom(_roomId);
         _multiplayController?.Dispose();
     }

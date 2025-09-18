@@ -25,6 +25,17 @@ public class GameManager : Singleton<GameManager>
 
     private GameUIController _gameUIController;
 
+    public bool IsPaused { get; private set; }
+    public void PauseGame()
+    {
+        IsPaused = true;
+    }
+
+    public void ResumeGame()
+    {
+        IsPaused = false;
+    }
+
     private void Start()
     {
         // 로그인
