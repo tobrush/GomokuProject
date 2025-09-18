@@ -17,7 +17,6 @@ public class ConfirmPanelController : PanelController
     }
     public void OnClickConfirmBtn()
     {
-
         Hide(() =>
         {
             _onConfirmButtonClicked?.Invoke();

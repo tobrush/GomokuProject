@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using UnityEngine;
 using static Constants;
 using static UnityEditor.Experimental.GraphView.GraphView;
@@ -12,12 +14,13 @@ public class GameLogic
     public BasePlayerState secondPlayerState; //B
     public enum GameResult { None, Win, Lose, Draw }
 
-    private BasePlayerState _currentPlayerState; //ÇöÀç ÅÏ ÇÃ·¹ÀÌ¾î
+    private BasePlayerState _currentPlayerState; //í˜„ì¬ í„´ í”Œë ˆì´ì–´
 
+    private Coroutine _turnTimerCoroutine;
+    private float _turnLimit = 30f; // 30ì´ˆ ì œí•œ
 
     private MultiplayController _multiplayController;
     private string _roomId;
-
 
     public Constants.PlayerType[,] GetBoard()
     {
@@ -31,7 +34,7 @@ public class GameLogic
 
         _board = new Constants.PlayerType[Constants.BlockColumnCount, Constants.BlockColumnCount];
 
-        // Game Type ÃÊ±âÈ­
+        // Game Type ì´ˆê¸°í™”
         switch (gameType)
         {
             case Constants.GameType.SinglePlay:
@@ -43,7 +46,7 @@ public class GameLogic
             case Constants.GameType.DualPlay:
                 firstPlayerState = new PlayerState(true);
                 secondPlayerState = new PlayerState(false);
-                // °ÔÀÓ ½ÃÀÛ
+                // ê²Œì„ ì‹œì‘
                 SetState(firstPlayerState);
                 break;
             case Constants.GameType.MultiPlay:
@@ -55,7 +58,7 @@ public class GameLogic
                     {
                         case Constants.MultiplayControllerState.CreateRoom:
                             Debug.Log("## Create Room ##");
-                            // TODO: ´ë±â È­¸é UI Ç¥½Ã
+                            // TODO: ëŒ€ê¸° í™”ë©´ UI í‘œì‹œ
                             break;
                         case Constants.MultiplayControllerState.JoinRoom:
                             Debug.Log("## Join Room ##");
@@ -71,11 +74,11 @@ public class GameLogic
                             break;
                         case Constants.MultiplayControllerState.ExitRoom:
                             Debug.Log("## Exit Room ##");
-                            // TODO: ÆË¾÷ ¶ç¿ì°í ¸ŞÀÎÈ­¸éÀ¸·Î ÀÌµ¿
+                            // TODO: íŒì—… ë„ìš°ê³  ë©”ì¸í™”ë©´ìœ¼ë¡œ ì´ë™
                             break;
                         case Constants.MultiplayControllerState.EndGame:
                             Debug.Log("## End Game ##");
-                            // TODO: ÆË¾÷ ¶ç¿ì°í ¸ŞÀÎÈ­¸éÀ¸·Î ÀÌµ¿
+                            // TODO: íŒì—… ë„ìš°ê³  ë©”ì¸í™”ë©´ìœ¼ë¡œ ì´ë™
                             break;
                     }
                 });
@@ -89,6 +92,55 @@ public class GameLogic
         _currentPlayerState?.OnExit(this);
         _currentPlayerState = state;
         _currentPlayerState?.OnEnter(this);
+
+        // ê¸°ì¡´ íƒ€ì´ë¨¸ ë©ˆì¶¤
+        if (_turnTimerCoroutine != null)
+        {
+            BlockController.StopCoroutine(_turnTimerCoroutine);
+            _turnTimerCoroutine = null;
+        }
+        // ìƒˆ í„´ì´ í”Œë ˆì´ì–´ í„´ì¼ ë•Œë§Œ íƒ€ì´ë¨¸ ì‹œì‘
+        if (_currentPlayerState != null && !(_currentPlayerState is AIState))
+        {
+            GameManager.Instance?.InitTurnTimerUI(_turnLimit);
+            _turnTimerCoroutine = BlockController.StartCoroutine(TurnTimer());
+        }
+    }
+
+    private IEnumerator TurnTimer()
+    {
+        float time = _turnLimit;
+
+        while (time >= 0)
+        {
+            // ì‹±ê¸€/ë“€ì–¼ì¼ ë•Œë§Œ ì •ì§€ ì²´í¬
+            if (GameManager.Instance._gameType != Constants.GameType.MultiPlay)
+            {
+                // íŒì—…ìœ¼ë¡œ ì¼ì‹œì •ì§€ ì¤‘ì´ë©´ ëŒ€ê¸°
+                while (GameManager.Instance.IsPaused)
+                {
+                    yield return null; // ë‹¤ìŒ í”„ë ˆì„ê¹Œì§€ ëŒ€ê¸°
+                }
+            }
+            time -= Time.deltaTime;
+
+            GameManager.Instance?.SetGameTurnTime(time); // UI ê°±ì‹ 
+
+            yield return null;
+        }
+
+        // í˜„ì¬ í„´ì¸ í”Œë ˆì´ì–´ í™•ì¸
+        if (_currentPlayerState is PlayerState playerState)
+        {
+            if (playerState.IsFirstPlayer) // í‘ëŒ í„´ ì´ˆê³¼
+            {
+                EndGame(GameResult.Lose);  // A(í‘) íŒ¨ë°° B ìŠ¹ë¦¬
+            }
+            else // ë°±ëŒ í„´ ì´ˆê³¼
+            {
+                EndGame(GameResult.Win);   // B(ë°±) íŒ¨ë°° A ìŠ¹ë¦¬
+            }
+        }
     }
 
     public bool SetNewBoardVlaue(Constants.PlayerType playerType, int row, int col)
@@ -97,6 +149,12 @@ public class GameLogic
 
         if (playerType == Constants.PlayerType.PlayerA)
         {
+            if (GameAI.IsBanBlock(playerType, row, col, _board))
+            {
+                // ê¸ˆìˆ˜ë¼ë©´ UI í‘œì‹œ (X ë§ˆí¬) ë° ì°©ìˆ˜ ë¶ˆê°€
+                BlockController.PlaceMaker(Block.MarkerType.Ban, row, col);
+                return false;
+            }
             _board[row, col] = playerType;
             BlockController.PlaceMaker(Block.MarkerType.BlackStone, row, col);
        
@@ -122,12 +180,23 @@ public class GameLogic
    
     public void EndGame(GameResult gameResult)
     {
+        if (_turnTimerCoroutine != null)
+        {
+            BlockController.StopCoroutine(_turnTimerCoroutine);
+            _turnTimerCoroutine = null;
+        }
+
         SetState(null);
         firstPlayerState = null;
         secondPlayerState = null;
 
 
-        string resultMessage = "°ÔÀÓ¿À¹ö";
+        string fileName = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+        GameManager.Instance.SaveRecord(BlockController.gameRecord, fileName);
+        Debug.Log("ê²Œì„ ê¸°ë¡ ì €ì¥ ì™„ë£Œ: " + fileName);
+    
+
+        string resultMessage = "ê²Œì„ì˜¤ë²„";
 
         switch (GameManager.Instance._gameType)
         {
@@ -136,16 +205,16 @@ public class GameLogic
                 switch (gameResult)
                 {
                     case GameResult.None:
-                        resultMessage = "¿À·ù";
+                        resultMessage = "ì˜¤ë¥˜";
                         break;
                     case GameResult.Win:
-                        resultMessage = "½Â¸®";
+                        resultMessage = "ìŠ¹ë¦¬";
                         break;
                     case GameResult.Lose:
-                        resultMessage = "ÆĞ¹è";
+                        resultMessage = "íŒ¨ë°°";
                         break;
                     case GameResult.Draw:
-                        resultMessage = "ºñ±è";
+                        resultMessage = "ë¹„ê¹€";
                         break;
                 }
                 break;
@@ -153,7 +222,7 @@ public class GameLogic
                 switch (gameResult)
                 {
                     case GameResult.None:
-                        resultMessage = "¿À·ù";
+                        resultMessage = "ì˜¤ë¥˜";
                         break;
                     case GameResult.Win:
                         resultMessage = "A player Win";
@@ -171,16 +240,16 @@ public class GameLogic
                 switch (gameResult)
                 {
                     case GameResult.None:
-                        resultMessage = "¿À·ù";
+                        resultMessage = "ì˜¤ë¥˜";
                         break;
                     case GameResult.Win:
-                        resultMessage = "½Â¸®";
+                        resultMessage = "ìŠ¹ë¦¬";
                         break;
                     case GameResult.Lose:
-                        resultMessage = "ÆĞ¹è";
+                        resultMessage = "íŒ¨ë°°";
                         break;
                     case GameResult.Draw:
-                        resultMessage = "ºñ±è";
+                        resultMessage = "ë¹„ê¹€";
                         break;
                 }*/
                 break;
@@ -195,13 +264,25 @@ public class GameLogic
             });
         }
        
-        //Debug.Log("°ÔÀÓ ¿À¹ö");
+        //Debug.Log("ê²Œì„ ì˜¤ë²„");
     }
 
     public void Dispose()
     {
+        if (_turnTimerCoroutine != null)
+        {
+            BlockController.StopCoroutine(_turnTimerCoroutine);
+            _turnTimerCoroutine = null;
+        }
+
         _multiplayController?.LeaveRoom(_roomId);
         _multiplayController?.Dispose();
     }
+
+    public BasePlayerState GetCurrentState()
+    {
+        return _currentPlayerState;
+    }
+
 }
 

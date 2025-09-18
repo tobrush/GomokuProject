@@ -13,13 +13,17 @@ public class BlockController : MonoBehaviour
 
     public BadukBoard board;
 
+    public GameRecord gameRecord = new GameRecord();
+    private int moveOrder = 1; // ì°©ìˆ˜ ìˆœì„œ ì¶”ì ìš©
+
+
 
     public delegate void OnBlockkClicked(int row, int col);
     public OnBlockkClicked OnBlockClickedDelegate;
 
     public void Awake()
     {
-        // ¹è¿­ °¹¼ö ÃÊ±âÈ­
+        // ë°°ì—´ ê°¯ìˆ˜ ì´ˆê¸°í™”
         blocks = new Block[board.size * board.size];
 
         int index = 0;
@@ -43,7 +47,7 @@ public class BlockController : MonoBehaviour
                 }
                 else
                 {
-                    Debug.LogWarning($"Block ÄÄÆ÷³ÍÆ®°¡ {_block.name}¿¡ ¾øÀ½!");
+                    Debug.LogWarning($"Block ì»´í¬ë„ŒíŠ¸ê°€ {_block.name}ì— ì—†ìŒ!");
                 }
                 index++;
             }
@@ -67,6 +71,8 @@ public class BlockController : MonoBehaviour
     }
     public void PlaceMaker(Block.MarkerType markerType, int row, int col)
     {
+
+
         if (LastBlock != null)
         {
             if (LastBlock.nowSpriteRender.sprite != null)
@@ -74,14 +80,54 @@ public class BlockController : MonoBehaviour
                 LastBlock.nowSpriteRender.sprite = null;
             }
         }
-        // row, col >> index º¯È¯
+
+
+        // row, col >> index ë³€í™˜
         var blockIndex = row * Constants.BlockColumnCount + col;
         blocks[blockIndex].SetMarker(markerType);
         LastBlock = blocks[blockIndex];
+
+
+        if (markerType == Block.MarkerType.BlackStone || markerType == Block.MarkerType.WhiteStone)
+        {
+            // ë§ˆì»¤ íƒ€ì…ì— ë”°ë¼ í”Œë ˆì´ì–´ ê²°ì • (ì˜ˆ: í‘=1, ë°±=2)
+            int player = markerType == Block.MarkerType.BlackStone ? 1 : 2;
+            // Move ê°ì²´ ìƒì„± ë° ê¸°ë¡
+            Move move = new Move
+            {
+                x = col,
+                y = row,
+                player = player,
+                order = moveOrder++
+            };
+            gameRecord.moves.Add(move);
+        }
+       
+
     }
 
     public void SetBlockColor()
     {
-        //TODO : °ÔÀÓ·ÎÁ÷ÀÌ ¿Ï¼ºµÇ¸é ±¸Çö
+        //TODO : ê²Œì„ë¡œì§ì´ ì™„ì„±ë˜ë©´ êµ¬í˜„
     }
+
+    public Block GetBlock(int index)
+    {
+        if (index >= 0 && index < blocks.Length)
+            return blocks[index];
+        return null;
+    }
+
+    public void ClearBoard()
+    {
+        foreach (var block in blocks)
+        {
+            block.SetMarker(Block.MarkerType.None);
+            block.SetOrderNumber(0);
+        }
+        LastBlock = null;
+        gameRecord = new GameRecord();
+        moveOrder = 1;
+    }
+
 }

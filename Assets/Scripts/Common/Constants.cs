@@ -2,21 +2,22 @@ using UnityEngine;
 
 public class Constants : MonoBehaviour
 {
-    public const string ServerURL = "http://localhost:3000";
-    public const string SocketServerURL = "ws://localhost:3000";
+    public const string ServerURL = "https://gomokuprojectserver.onrender.com";
+    public const string SocketServerURL = "wss://gomokuprojectserver.onrender.com";
 
     public enum MultiplayControllerState
     {
-        CreateRoom,     // ¹æ »ı¼º
-        JoinRoom,       // »ı¼ºµÈ ¹æ¿¡ Âü¿©
-        StartGame,      // »ı¼ºÇÑ ¹æ¿¡ ´Ù¸¥ À¯Àú°¡ Âü¿©ÇØ¼­ °ÔÀÓÀ» ½ÃÀÛ
-        ExitRoom,       // Å¬¶óÀÌ¾ğÆ®°¡ ¹æÀ» ºüÁ® ³ª¿ÔÀ» ¶§
-        EndGame         // »ó´ë¹æÀÌ Á¢¼ÓÀ» ²÷°Å³ª ¹æÀ» ³ª°¬À» ¶§
+        CreateRoom,     // ë°© ìƒì„±
+        JoinRoom,       // ìƒì„±ëœ ë°©ì— ì°¸ì—¬
+        StartGame,      // ìƒì„±í•œ ë°©ì— ë‹¤ë¥¸ ìœ ì €ê°€ ì°¸ì—¬í•´ì„œ ê²Œì„ì„ ì‹œì‘
+        ExitRoom,       // í´ë¼ì´ì–¸íŠ¸ê°€ ë°©ì„ ë¹ ì ¸ ë‚˜ì™”ì„ ë•Œ
+        EndGame         // ìƒëŒ€ë°©ì´ ì ‘ì†ì„ ëŠê±°ë‚˜ ë°©ì„ ë‚˜ê°”ì„ ë•Œ
     }
 
-    public enum GameType { SinglePlay, DualPlay, MultiPlay }
+    public enum GameType { SinglePlay, DualPlay, MultiPlay, Record }
     public enum PlayerType { None, PlayerA, PlayerB }
 
     public const int BlockColumnCount = 13;
+
 
 }

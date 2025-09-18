@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -9,9 +10,13 @@ using static ConfirmPanelController;
 [RequireComponent(typeof(SpriteRenderer))]
 public class Block : MonoBehaviour
 {
+    public TextMeshPro orderText;  // ëŒ ìœ„ì— í‘œì‹œí•  ìˆ˜
+
     [SerializeField] private Sprite BlackStoneSprite;
     [SerializeField] private Sprite WhiteStoneSprite;
     [SerializeField] private Sprite ArrowSprite;
+    [SerializeField] private Sprite AimSprite;
+    [SerializeField] private Sprite BanPositionSprite;
     [SerializeField] private SpriteRenderer makerSpriteRender; // maker SR
     public SpriteRenderer nowSpriteRender; // arrow SR
 
@@ -19,8 +24,9 @@ public class Block : MonoBehaviour
     public delegate void OnBlockClicked(int index);
 
     private OnBlockClicked _onBlockClicked;
+    
 
-    public enum MarkerType { None, BlackStone, WhiteStone }
+    public enum MarkerType { None, BlackStone, WhiteStone, Aim, Ban }
 
     private int _blockIndex;
 
@@ -41,7 +47,7 @@ public class Block : MonoBehaviour
         SetMarker(MarkerType.None);
 
 
-        _onBlockClicked = onBlockClicked; // ³»ºÎ ÇÊµå ÀúÀå
+        _onBlockClicked = onBlockClicked; // ë‚´ë¶€ í•„ë“œ ì €ì¥
         
         StartCoroutine(DelayInit());
 
@@ -49,7 +55,7 @@ public class Block : MonoBehaviour
     }
     private IEnumerator DelayInit()
     {
-        yield return null; // 1ÇÁ·¹ÀÓ ´ë±â
+        yield return null; // 1í”„ë ˆì„ ëŒ€ê¸°
      
         SetBlockColor(_defalutBlockColor);
     }
@@ -60,17 +66,30 @@ public class Block : MonoBehaviour
         {
             case MarkerType.None:
                 makerSpriteRender.sprite = null;
+                makerSpriteRender.color = Color.white;
                 nowSpriteRender.sprite = null;
                 break;
             case MarkerType.BlackStone:
                 makerSpriteRender.sprite = BlackStoneSprite;
+                makerSpriteRender.color = Color.white;
                 nowSpriteRender.sprite = ArrowSprite;
                 makerSpriteRender.size = new Vector2(0.3f, 0.3f);
                 break;
             case MarkerType.WhiteStone:
                 makerSpriteRender.sprite = WhiteStoneSprite;
+                makerSpriteRender.color = Color.white;
                 nowSpriteRender.sprite = ArrowSprite;
                 makerSpriteRender.size = new Vector2(0.3f, 0.3f);
+                break;
+            case MarkerType.Aim:
+                makerSpriteRender.sprite = AimSprite;
+                makerSpriteRender.color = Color.green;
+                nowSpriteRender.sprite = null;
+                break;
+            case MarkerType.Ban:
+                makerSpriteRender.sprite = BanPositionSprite;
+                makerSpriteRender.color = Color.white;
+                nowSpriteRender.sprite = null;
                 break;
 
         }
@@ -88,7 +107,21 @@ public class Block : MonoBehaviour
             return;
         }
         Debug.Log("selected Block : " + _blockIndex);
+        if (makerSpriteRender.sprite == BanPositionSprite)
+            return; // ê¸ˆìˆ˜ ì¹¸ í´ë¦­ ì°¨ë‹¨
 
         _onBlockClicked?.Invoke(_blockIndex);
     }
+
+    public void SetOrderNumber(int number)
+    {
+        if (orderText != null)
+        {
+            orderText.text = number > 0 ? number.ToString() : "";
+            orderText.GetComponent<MeshRenderer>().sortingOrder = 10; // ëŒë³´ë‹¤ ìœ„
+            Debug.Log(number);
+        }
+          
+    }
+
 }

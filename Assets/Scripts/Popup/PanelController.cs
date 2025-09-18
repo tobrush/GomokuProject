@@ -12,7 +12,7 @@ public class PanelController : MonoBehaviour
 
     Image _backImage;
 
-    //ÆĞ³ÎÀÌ Hide µÉ¶§ ÇØ¾ßÇÒ µ¿ÀÛ
+    //íŒ¨ë„ì´ Hide ë ë•Œ í•´ì•¼í•  ë™ì‘
     public delegate void PanelControllerHideDelegate();
 
     private void Awake()
@@ -24,6 +24,11 @@ public class PanelController : MonoBehaviour
 
     public void Show()
     {
+        if (GameManager.Instance._gameType != Constants.GameType.MultiPlay)
+        {
+            GameManager.Instance.PauseGame();
+        }
+
         _backCanvasGroup.alpha = 0;
         panelRectTransform.localScale = Vector3.zero;
         _backImage.raycastTarget = true;
@@ -40,6 +45,11 @@ public class PanelController : MonoBehaviour
 
     public void Hide(PanelControllerHideDelegate hideDelegate = null)
     {
+        if (GameManager.Instance._gameType != Constants.GameType.MultiPlay)
+        {
+            GameManager.Instance.ResumeGame();
+        }
+           
         _backCanvasGroup.alpha = 1;
         panelRectTransform.localScale = Vector3.one;
         _backImage.raycastTarget = false;

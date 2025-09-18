@@ -15,12 +15,17 @@ public class MultiPlayerState : BasePlayerState
 
     public override void HandleMove(GameLogic gameLogic, int row, int col)
     {
+        if (_playerType == Constants.PlayerType.PlayerA && GameAI.IsBanBlock(_playerType, row, col, gameLogic.GetBoard()))
+        {
+            Debug.LogWarning($"[MultiPlay] 금수 착수 시도 감지: ({row},{col})");
+            return; // 무시
+        }
+
         ProcessMove(gameLogic, _playerType, row, col);
     }
 
     public override void OnEnter(GameLogic gameLogic)
     {
-        Debug.Log($"[MultiPlayerState] OnEnter called, isFirst:{_isFirstPlayer}");
 
         _multiplayController.onBlockDataChanged = blockIndex =>
         {

@@ -25,9 +25,20 @@ public class GameManager : Singleton<GameManager>
 
     private GameUIController _gameUIController;
 
+    public bool IsPaused { get; private set; }
+    public void PauseGame()
+    {
+        IsPaused = true;
+    }
+
+    public void ResumeGame()
+    {
+        IsPaused = false;
+    }
+
     private void Start()
     {
-        // ·Î±×ÀÎ
+        // ë¡œê·¸ì¸
         var sid = PlayerPrefs.GetString("sid");
         Debug.Log("SID: " + sid);
 
@@ -61,6 +72,14 @@ public class GameManager : Singleton<GameManager>
         SceneManager.LoadScene("Game");
 
     }
+    public void ChangeToRecordScene()
+    {
+        _gameType = Constants.GameType.Record;
+        SceneManager.LoadScene("Record");
+
+    }
+
+
     public void SetAILoading(bool isActive)
     {
         _gameUIController.SetAILoading(isActive);
@@ -80,7 +99,7 @@ public class GameManager : Singleton<GameManager>
 
         if (_confirmPanelController == null)
         {
-            // ¾øÀ¸¸é »õ·Î »ı¼º
+            // ì—†ìœ¼ë©´ ìƒˆë¡œ ìƒì„±
             var confirmPanelObject = Instantiate(confrimPanel, _canvas.transform);
             _confirmPanelController = confirmPanelObject.GetComponent<ConfirmPanelController>();
         }
@@ -94,7 +113,7 @@ public class GameManager : Singleton<GameManager>
 
         if(scene.name == "Game")
         {
-            //block ÃÊ±âÈ­
+            //block ì´ˆê¸°í™”
             var blockController = FindFirstObjectByType<BlockController>();
 
             if (blockController != null)
@@ -110,10 +129,10 @@ public class GameManager : Singleton<GameManager>
             }
     
 
-            //GameLogic »ı¼º
+            //GameLogic ìƒì„±
             if (_gameLogic != null)
             {
-                // TODO: ±âÁ¸ °ÔÀÓ ·ÎÁ÷À» ¼Ò¸ê
+                // TODO: ê¸°ì¡´ ê²Œì„ ë¡œì§ì„ ì†Œë©¸
             }
             _gameLogic = new GameLogic(blockController, _gameType);
         }
@@ -126,6 +145,24 @@ public class GameManager : Singleton<GameManager>
         _gameUIController.SetGameTurnPanel(gameTurnPanelType);
     }
 
+    public void SetGameTurnTime(float time)
+    {
+        _gameUIController?.SetTurnTimer(time);
+    }
+
+    public void InitTurnTimerUI(float maxTime)
+    {
+        _gameUIController?.InitTurnTimer(maxTime);
+    }
+
+
+    public void SaveRecord(GameRecord record, string fileName)
+    {
+        string json = JsonUtility.ToJson(record, true);
+        string path = Application.dataPath + "/GameRecords/" + fileName + ".json";
+        System.IO.File.WriteAllText(path, json);
+        Debug.Log("Saved to " + path);
+    }
 }
 
 

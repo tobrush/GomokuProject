@@ -1,0 +1,232 @@
+{
+    "moves": [
+        {
+            "x": 7,
+            "y": 7,
+            "player": 1,
+            "order": 1
+        },
+        {
+            "x": 6,
+            "y": 6,
+            "player": 2,
+            "order": 2
+        },
+        {
+            "x": 6,
+            "y": 7,
+            "player": 1,
+            "order": 3
+        },
+        {
+            "x": 5,
+            "y": 7,
+            "player": 2,
+            "order": 4
+        },
+        {
+            "x": 8,
+            "y": 7,
+            "player": 1,
+            "order": 5
+        },
+        {
+            "x": 7,
+            "y": 5,
+            "player": 2,
+            "order": 6
+        },
+        {
+            "x": 9,
+            "y": 7,
+            "player": 1,
+            "order": 7
+        },
+        {
+            "x": 10,
+            "y": 7,
+            "player": 2,
+            "order": 8
+        },
+        {
+            "x": 4,
+            "y": 8,
+            "player": 1,
+            "order": 9
+        },
+        {
+            "x": 8,
+            "y": 5,
+            "player": 2,
+            "order": 10
+        },
+        {
+            "x": 6,
+            "y": 5,
+            "player": 1,
+            "order": 11
+        },
+        {
+            "x": 9,
+            "y": 6,
+            "player": 2,
+            "order": 12
+        },
+        {
+            "x": 7,
+            "y": 4,
+            "player": 1,
+            "order": 13
+        },
+        {
+            "x": 8,
+            "y": 4,
+            "player": 2,
+            "order": 14
+        },
+        {
+            "x": 9,
+            "y": 3,
+            "player": 1,
+            "order": 15
+        },
+        {
+            "x": 8,
+            "y": 3,
+            "player": 2,
+            "order": 16
+        },
+        {
+            "x": 8,
+            "y": 2,
+            "player": 1,
+            "order": 17
+        },
+        {
+            "x": 7,
+            "y": 6,
+            "player": 2,
+            "order": 18
+        },
+        {
+            "x": 8,
+            "y": 6,
+            "player": 1,
+            "order": 19
+        },
+        {
+            "x": 9,
+            "y": 5,
+            "player": 2,
+            "order": 20
+        },
+        {
+            "x": 10,
+            "y": 5,
+            "player": 1,
+            "order": 21
+        },
+        {
+            "x": 10,
+            "y": 6,
+            "player": 2,
+            "order": 22
+        },
+        {
+            "x": 7,
+            "y": 3,
+            "player": 1,
+            "order": 23
+        },
+        {
+            "x": 11,
+            "y": 8,
+            "player": 2,
+            "order": 24
+        },
+        {
+            "x": 12,
+            "y": 9,
+            "player": 1,
+            "order": 25
+        },
+        {
+            "x": 10,
+            "y": 8,
+            "player": 2,
+            "order": 26
+        },
+        {
+            "x": 10,
+            "y": 4,
+            "player": 1,
+            "order": 27
+        },
+        {
+            "x": 11,
+            "y": 5,
+            "player": 2,
+            "order": 28
+        },
+        {
+            "x": 7,
+            "y": 1,
+            "player": 1,
+            "order": 29
+        },
+        {
+            "x": 6,
+            "y": 0,
+            "player": 2,
+            "order": 30
+        },
+        {
+            "x": 7,
+            "y": 2,
+            "player": 1,
+            "order": 31
+        },
+        {
+            "x": 7,
+            "y": 0,
+            "player": 2,
+            "order": 32
+        },
+        {
+            "x": 10,
+            "y": 2,
+            "player": 1,
+            "order": 33
+        },
+        {
+            "x": 11,
+            "y": 7,
+            "player": 2,
+            "order": 34
+        },
+        {
+            "x": 12,
+            "y": 8,
+            "player": 1,
+            "order": 35
+        },
+        {
+            "x": 11,
+            "y": 6,
+            "player": 2,
+            "order": 36
+        },
+        {
+            "x": 11,
+            "y": 9,
+            "player": 1,
+            "order": 37
+        },
+        {
+            "x": 11,
+            "y": 4,
+            "player": 2,
+            "order": 38
+        }
+    ]
+}
