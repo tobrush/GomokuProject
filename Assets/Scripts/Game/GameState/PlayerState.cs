@@ -45,7 +45,40 @@ public class PlayerState : BasePlayerState
             GameManager.Instance.SetGameTurnPanel(GameUIController.GameTurnPanelType.ATurn);
         else
             GameManager.Instance.SetGameTurnPanel(GameUIController.GameTurnPanelType.BTurn);
+        var board = gameLogic.GetBoard();
+        int size = board.GetLength(0);
 
+        //금수 초기화
+        for (int row = 0; row < size; row++)
+        {
+            for (int col = 0; col < size; col++)
+            {
+                if (board[row, col] == Constants.PlayerType.None)
+                {
+                    int blockIndex = row * Constants.BlockColumnCount + col;
+                    var block = gameLogic.BlockController.GetBlock(blockIndex);
+                    if (block != null)
+                    {
+                        block.SetMarker(Block.MarkerType.None); // 빈칸 초기화
+                    }
+                }
+            }
+        }
+
+        // IsForbiddenMove 금수체크
+        if (_isFirstPlayer) // PlayerA = 흑
+        {
+            for (int row = 0; row < size; row++)
+            {
+                for (int col = 0; col < size; col++)
+                {
+                    if (board[row, col] == Constants.PlayerType.None && GameAI.IsBanBlock(Constants.PlayerType.PlayerA, row, col, board))
+                    {
+                        gameLogic.BlockController.PlaceMaker(Block.MarkerType.Ban, row, col);
+                    }
+                }
+            }
+        }
         // 공통: 블록 클릭 → 임시 착수 위치 저장
         gameLogic.BlockController.OnBlockClickedDelegate = (row, col) =>
         {

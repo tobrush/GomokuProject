@@ -104,6 +104,8 @@ public class Block : MonoBehaviour
             return;
         }
         Debug.Log("selected Block : " + _blockIndex);
+        if (makerSpriteRender.sprite == BanPositionSprite)
+            return; // 금수 칸 클릭 차단
 
         _onBlockClicked?.Invoke(_blockIndex);
     }

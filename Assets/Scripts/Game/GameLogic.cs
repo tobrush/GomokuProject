@@ -139,6 +139,12 @@ public class GameLogic
 
         if (playerType == Constants.PlayerType.PlayerA)
         {
+            if (GameAI.IsBanBlock(playerType, row, col, _board))
+            {
+                // 금수라면 UI 표시 (X 마크) 및 착수 불가
+                BlockController.PlaceMaker(Block.MarkerType.Ban, row, col);
+                return false;
+            }
             _board[row, col] = playerType;
             BlockController.PlaceMaker(Block.MarkerType.BlackStone, row, col);
        

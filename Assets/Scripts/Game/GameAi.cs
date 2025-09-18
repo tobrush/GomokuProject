@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using static Constants;
 
 public static class GameAI
 {
     /*
-    // ÇöÀç »óÅÂ¸¦ Àü´ŞÇÏ¸é ´ÙÀ½ ÃÖÀûÀÇ ¼ö¸¦ ¹İÈ¯ÇÏ´Â ¸Ş¼­µå
+    // í˜„ì¬ ìƒíƒœë¥¼ ì „ë‹¬í•˜ë©´ ë‹¤ìŒ ìµœì ì˜ ìˆ˜ë¥¼ ë°˜í™˜í•˜ëŠ” ë©”ì„œë“œ
     public static (int row, int col)? GetBestMove(Constants.PlayerType[,] board)
     {
         float bestScore = -1000;
@@ -38,7 +39,7 @@ public static class GameAI
 
     private static float DoMiniMax(Constants.PlayerType[,] board, int depth, bool isMaximizing)
     {
-        // °ÔÀÓ Á¾·á »óÅÂ Ã¼Å©
+        // ê²Œì„ ì¢…ë£Œ ìƒíƒœ ì²´í¬
         if (CheckGameWin(Constants.PlayerType.PlayerA, board))
             return -10 + depth;
         if (CheckGameWin(Constants.PlayerType.PlayerB, board))
@@ -125,7 +126,7 @@ public static class GameAI
             {
                 if (board[r, c] != Constants.PlayerType.None) continue;
 
-                // ÁÖº¯ radius ¾È¿¡ µ¹ÀÌ ÀÖÀ¸¸é ÈÄº¸·Î µî·Ï
+                // ì£¼ë³€ radius ì•ˆì— ëŒì´ ìˆìœ¼ë©´ í›„ë³´ë¡œ ë“±ë¡
                 bool nearStone = false;
                 for (int dr = -radius; dr <= radius && !nearStone; dr++)
                 {
@@ -166,7 +167,7 @@ public static class GameAI
                 board[row, col] = Constants.PlayerType.None;
                 bestScore = Mathf.Max(score, bestScore);
                 alpha = Mathf.Max(alpha, score);
-                if (beta <= alpha) break; // °¡ÁöÄ¡±â
+                if (beta <= alpha) break; // ê°€ì§€ì¹˜ê¸°
             }
             return bestScore;
         }
@@ -180,7 +181,7 @@ public static class GameAI
                 board[row, col] = Constants.PlayerType.None;
                 bestScore = Mathf.Min(score, bestScore);
                 beta = Mathf.Min(beta, score);
-                if (beta <= alpha) break; // °¡ÁöÄ¡±â
+                if (beta <= alpha) break; // ê°€ì§€ì¹˜ê¸°
             }
             return bestScore;
         }
@@ -191,13 +192,13 @@ public static class GameAI
         int size = board.GetLength(0);
         int score = 0;
 
-        // ³× ¹æÇâ °Ë»ç: °¡·Î, ¼¼·Î, ´ë°¢¼± ¢Ù, ´ë°¢¼± ¢×
+        // ë„¤ ë°©í–¥ ê²€ì‚¬: ê°€ë¡œ, ì„¸ë¡œ, ëŒ€ê°ì„  â†˜, ëŒ€ê°ì„  â†™
         int[][] directions = new int[][]
         {
-        new[] {1, 0},   // °¡·Î
-        new[] {0, 1},   // ¼¼·Î
-        new[] {1, 1},   // ¢Ù ´ë°¢
-        new[] {1, -1}   // ¢× ´ë°¢
+        new[] {1, 0},   // ê°€ë¡œ
+        new[] {0, 1},   // ì„¸ë¡œ
+        new[] {1, 1},   // â†˜ ëŒ€ê°
+        new[] {1, -1}   // â†™ ëŒ€ê°
         };
 
         for (int r = 0; r < size; r++)
@@ -208,8 +209,8 @@ public static class GameAI
 
                 foreach (var dir in directions)
                 {
-                    int count = 1; // ¿¬¼ÓµÈ µ¹ °³¼ö
-                    int blocked = 0; // ¾çÂÊÀÌ ¸·Çû´ÂÁö ¿©ºÎ
+                    int count = 1; // ì—°ì†ëœ ëŒ ê°œìˆ˜
+                    int blocked = 0; // ì–‘ìª½ì´ ë§‰í˜”ëŠ”ì§€ ì—¬ë¶€
 
                     int pr = r - dir[0];
                     int pc = c - dir[1];
@@ -245,32 +246,32 @@ public static class GameAI
 
     private static int GetPatternScore(int count, int blocked, Constants.PlayerType player)
     {
-        // Á¡¼ö Å×ÀÌºí
+        // ì ìˆ˜ í…Œì´ë¸”
         int[,] scoreTable =
         {
         { 0, 0, 0 },        // dummy (count=0)
-        { 10, 1, 0 },       // 1¸ñ: ¿­¸°10, ¸·Èù1
-        { 100, 10, 0 },     // 2¸ñ
-        { 1000, 100, 0 },   // 3¸ñ
-        { 10000, 1000, 0 }, // 4¸ñ
-        { 100000, 100000, 100000 } // 5¸ñ: ¹«Á¶°Ç ½Â¸®
+        { 10, 1, 0 },       // 1ëª©: ì—´ë¦°10, ë§‰íŒ1
+        { 100, 10, 0 },     // 2ëª©
+        { 1000, 100, 0 },   // 3ëª©
+        { 10000, 1000, 0 }, // 4ëª©
+        { 100000, 100000, 100000 } // 5ëª©: ë¬´ì¡°ê±´ ìŠ¹ë¦¬
     };
 
         int idx = Math.Min(count, 5);
         int baseScore = 0;
 
-        if (blocked == 0) baseScore = scoreTable[idx, 0]; // ¿­¸°
-        else if (blocked == 1) baseScore = scoreTable[idx, 1]; // ¸·Èù ÇÑÂÊ
-        else baseScore = scoreTable[idx, 2]; // ¾çÂÊ ´Ù ¸·Èû ¡æ 0Á¡
+        if (blocked == 0) baseScore = scoreTable[idx, 0]; // ì—´ë¦°
+        else if (blocked == 1) baseScore = scoreTable[idx, 1]; // ë§‰íŒ í•œìª½
+        else baseScore = scoreTable[idx, 2]; // ì–‘ìª½ ë‹¤ ë§‰í˜ â†’ 0ì 
 
         if (player == Constants.PlayerType.PlayerA)
-            return -baseScore; // »ó´ë Á¡¼ö´Â À½¼ö
+            return -baseScore; // ìƒëŒ€ ì ìˆ˜ëŠ” ìŒìˆ˜
         else
-            return baseScore;  // AI Á¡¼ö´Â ¾ç¼ö
+            return baseScore;  // AI ì ìˆ˜ëŠ” ì–‘ìˆ˜
     }
 
 
-    // ºñ°å´ÂÁö È®ÀÎ
+    // ë¹„ê²¼ëŠ”ì§€ í™•ì¸
     public static bool CheckGameDraw(Constants.PlayerType[,] board)
     {
         for (var row = 0; row < board.GetLength(0); row++)
@@ -283,11 +284,11 @@ public static class GameAI
         return true;
     }
 
-    // °ÔÀÓ ½Â¸® È®ÀÎ <- 3x3 Æ½ÅÃÅä¿ëÀÌ¶ó¼­ (0,0),(0,1),(0,2) ÀÌ·± ½ÄÀ¸·Î °íÁ¤ ÀÎµ¦½º¸¸ Ã¼Å©
+    // ê²Œì„ ìŠ¹ë¦¬ í™•ì¸ <- 3x3 í‹±íƒí† ìš©ì´ë¼ì„œ (0,0),(0,1),(0,2) ì´ëŸ° ì‹ìœ¼ë¡œ ê³ ì • ì¸ë±ìŠ¤ë§Œ ì²´í¬
     /*
     public static bool CheckGameWin(Constants.PlayerType playerType, Constants.PlayerType[,] board)
     {
-        // Col Ã¼Å© ÈÄ ÀÏÀÚ¸é True
+        // Col ì²´í¬ í›„ ì¼ìë©´ True
         for (var row = 0; row < board.GetLength(0); row++)
         {
             if (board[row, 0] == playerType &&
@@ -297,7 +298,7 @@ public static class GameAI
                 return true;
             }
         }
-        // Row Ã¼Å© ÈÄ ÀÏÀÚ¸é True
+        // Row ì²´í¬ í›„ ì¼ìë©´ True
         for (var col = 0; col < board.GetLength(1); col++)
         {
             if (board[0, col] == playerType &&
@@ -308,7 +309,7 @@ public static class GameAI
             }
         }
 
-        // ´ë°¢¼± ÀÏÀÚ¸é True
+        // ëŒ€ê°ì„  ì¼ìë©´ True
         if (board[0, 0] == playerType &&
             board[1, 1] == playerType &&
             board[2, 2] == playerType)
@@ -329,7 +330,7 @@ public static class GameAI
         int size = board.GetLength(0);
         int winLength = 5;
 
-        // 1) °¡·Î Ã¼Å©
+        // 1) ê°€ë¡œ ì²´í¬
         for (int r = 0; r < size; r++)
         {
             int count = 0;
@@ -347,7 +348,7 @@ public static class GameAI
             }
         }
 
-        // 2) ¼¼·Î Ã¼Å©
+        // 2) ì„¸ë¡œ ì²´í¬
         for (int c = 0; c < size; c++)
         {
             int count = 0;
@@ -365,7 +366,7 @@ public static class GameAI
             }
         }
 
-        // 3) ¢Ù ´ë°¢¼± Ã¼Å©
+        // 3) â†˜ ëŒ€ê°ì„  ì²´í¬
         for (int r = 0; r <= size - winLength; r++)
         {
             for (int c = 0; c <= size - winLength; c++)
@@ -382,7 +383,7 @@ public static class GameAI
             }
         }
 
-        // 4) ¢× ´ë°¢¼± Ã¼Å©
+        // 4) â†™ ëŒ€ê°ì„  ì²´í¬
         for (int r = 0; r <= size - winLength; r++)
         {
             for (int c = winLength - 1; c < size; c++)
@@ -411,5 +412,130 @@ public static class GameAI
         Test();
 
         i = 20;
+    }
+    public static bool IsBanBlock(PlayerType player, int row, int col, PlayerType[,] board)
+    {
+        // ë°±ëŒ(PlyaerB)ì—ê²ŒëŠ” ê¸ˆìˆ˜ ì—†ìŒ
+        if (player != Constants.PlayerType.PlayerA)
+            return false;
+
+        // ì´ë¯¸ ëŒì´ ìˆìœ¼ë©´ ì°©ìˆ˜ ë¶ˆê°€
+        if (board[row, col] != Constants.PlayerType.None)
+            return true;
+
+        int size = board.GetLength(0);
+        board[row, col] = player; // ê°€ìƒ ì°©ìˆ˜
+
+        bool isBan = false;
+
+        // 1) ì¥ëª©(6ëª© ì´ìƒ) ì²´í¬
+        if (HasOverline(player, row, col, board))
+        {
+            isBan = true;
+        }
+
+        // 2) ì—´ë¦°3 ê°œìˆ˜ ì²´í¬
+        int openThrees = CountOpenThrees(player, board);
+        if (openThrees >= 2)
+        {
+            isBan = true; // 3x3
+        }
+
+        // 3) ì—´ë¦°4 ê°œìˆ˜ ì²´í¬
+        int openFours = CountOpenFours(player, board);
+        if (openFours >= 2)
+        {
+            isBan = true; // 4x4
+        }
+
+        board[row, col] = Constants.PlayerType.None; // ì›ìƒë³µêµ¬
+        return isBan;
+    }
+    private static bool HasOverline(Constants.PlayerType player, int row, int col, Constants.PlayerType[,] board)
+    {
+        int[][] directions = {
+        new[] {1, 0},   // ê°€ë¡œ
+        new[] {0, 1},   // ì„¸ë¡œ
+        new[] {1, 1},   // â†˜ ëŒ€ê°
+        new[] {1, -1}   // â†™ ëŒ€ê°
+    };
+
+        int size = board.GetLength(0);
+
+        foreach (var dir in directions)
+        {
+            int count = 1;
+
+            // í•œìª½
+            int r = row + dir[0], c = col + dir[1];
+            while (r >= 0 && r < size && c >= 0 && c < size && board[r, c] == player)
+            {
+                count++;
+                r += dir[0]; c += dir[1];
+            }
+
+            // ë°˜ëŒ€ìª½
+            r = row - dir[0]; c = col - dir[1];
+            while (r >= 0 && r < size && c >= 0 && c < size && board[r, c] == player)
+            {
+                count++;
+                r -= dir[0]; c -= dir[1];
+            }
+
+            if (count >= 6) return true;
+        }
+        return false;
+    }
+
+    private static int CountOpenThrees(Constants.PlayerType player, Constants.PlayerType[,] board)
+    {
+        return CountOpenPatterns(player, board, 3);
+    }
+
+    private static int CountOpenFours(Constants.PlayerType player, Constants.PlayerType[,] board)
+    {
+        return CountOpenPatterns(player, board, 4);
+    }
+
+    private static int CountOpenPatterns(Constants.PlayerType player, Constants.PlayerType[,] board, int length)
+    {
+        int size = board.GetLength(0);
+        int count = 0;
+        int[][] directions = {
+        new[] {1, 0}, new[] {0, 1}, new[] {1, 1}, new[] {1, -1}
+    };
+
+        for (int r = 0; r < size; r++)
+        {
+            for (int c = 0; c < size; c++)
+            {
+                if (board[r, c] != player) continue;
+
+                foreach (var dir in directions)
+                {
+                    int stones = 1;
+                    int rr = r + dir[0], cc = c + dir[1];
+                    while (rr >= 0 && rr < size && cc >= 0 && cc < size && board[rr, cc] == player)
+                    {
+                        stones++;
+                        rr += dir[0]; cc += dir[1];
+                    }
+
+                    if (stones == length)
+                    {
+                        // ì—´ë¦°ì§€ ì²´í¬
+                        int end1r = r - dir[0], end1c = c - dir[1];
+                        int end2r = rr, end2c = cc;
+
+                        bool end1Open = (end1r >= 0 && end1r < size && end1c >= 0 && end1c < size && board[end1r, end1c] == Constants.PlayerType.None);
+                        bool end2Open = (end2r >= 0 && end2r < size && end2c >= 0 && end2c < size && board[end2r, end2c] == Constants.PlayerType.None);
+
+                        if (end1Open && end2Open)
+                            count++;
+                    }
+                }
+            }
+        }
+        return count;
     }
 }
