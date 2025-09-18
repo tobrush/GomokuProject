@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using static Constants;
 using static UnityEditor.Experimental.GraphView.GraphView;
@@ -14,6 +15,8 @@ public class GameLogic
 
     private BasePlayerState _currentPlayerState; //현재 턴 플레이어
 
+    private Coroutine _turnTimerCoroutine;
+    private float _turnLimit = 30f; // 30초 제한
 
     private MultiplayController _multiplayController;
     private string _roomId;
@@ -89,6 +92,45 @@ public class GameLogic
         _currentPlayerState?.OnExit(this);
         _currentPlayerState = state;
         _currentPlayerState?.OnEnter(this);
+
+        // 기존 타이머 멈춤
+        if (_turnTimerCoroutine != null)
+        {
+            GameManager.Instance.StopCoroutine(_turnTimerCoroutine);
+        }
+        // 새 턴이 플레이어 턴일 때만 타이머 시작
+        if (_currentPlayerState != null && !(_currentPlayerState is AIState))
+        {
+            _turnTimerCoroutine = GameManager.Instance.StartCoroutine(TurnTimer());
+        }
+    }
+
+    private IEnumerator TurnTimer()
+    {
+        float time = _turnLimit;
+
+        while (time >= 0)
+        {
+            Debug.Log($"[TurnTimer] 남은 시간: {time}초");
+            GameManager.Instance?.SetGameTurnTime(time); // UI 갱신
+            yield return new WaitForSeconds(1f);
+            time -= 1f;
+        }
+
+        Debug.Log("[TurnTimer] 시간 초과! 패배 처리 실행");
+
+        // 현재 턴인 플레이어 확인
+        if (_currentPlayerState is PlayerState playerState)
+        {
+            if (playerState.IsFirstPlayer) // 흑돌 턴 초과
+            {
+                EndGame(GameResult.Lose);  // A(흑) 패배 B 승리
+            }
+            else // 백돌 턴 초과
+            {
+                EndGame(GameResult.Win);   // B(백) 패배 A 승리
+            }
+        }
     }
 
     public bool SetNewBoardVlaue(Constants.PlayerType playerType, int row, int col)

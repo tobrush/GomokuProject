@@ -11,6 +11,8 @@ public class GameUIController : MonoBehaviour
     
     [SerializeField] private TMP_Text TopText;
 
+    [SerializeField] private TMP_Text turnTimerText;
+
     public void Start()
     {
         if (TopText == null)
@@ -89,4 +91,11 @@ public class GameUIController : MonoBehaviour
         }
     }
 
+    public void SetTurnTimer(float time)
+    {
+        if (turnTimerText != null)
+        {
+            turnTimerText.text = $"{Mathf.CeilToInt(time)}s";
+        }
+    }
 }

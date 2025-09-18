@@ -4,6 +4,8 @@ using static UnityEditor.Experimental.GraphView.GraphView;
 public class PlayerState : BasePlayerState
 {
     private bool _isFirstPlayer;
+    public bool IsFirstPlayer => _isFirstPlayer;
+
     private Constants.PlayerType _playerType;
 
     private MultiplayController _multiplayController;
@@ -16,6 +18,7 @@ public class PlayerState : BasePlayerState
 
     // 마지막 임시 표시된 블록
     private Block lastPreviewBlock = null;
+
 
     public PlayerState(bool isFirstPlayer)
     {
