@@ -119,7 +119,7 @@ public class Block : MonoBehaviour
         {
             orderText.text = number > 0 ? number.ToString() : "";
             orderText.GetComponent<MeshRenderer>().sortingOrder = 10; // 돌보다 위
-            Debug.Log(number);
+            //Debug.Log(number);
         }
           
     }

@@ -18,6 +18,17 @@ public class RecordListUI : MonoBehaviour
     public Button leftButton;             // < 버튼
     public Button rightButton;            // > 버튼
 
+    public Button firstButton;     // 처음으로
+    public Button prevButton;      // 이전 수
+    public Button nextButton;      // 다음 수
+    public Button lastButton;      // 마지막 수
+    public TMP_Text moveCounterText; // 중앙 텍스트 (예: 13/14)
+
+    private GameRecord currentRecord;
+    private int currentMoveIndex = -1; // -1이면 아무 돌도 없음
+
+
+
     public float scrollStep = 0.2f;       // 버튼 클릭 시 이동 비율
     public float moveDuration = 0.3f;     // 이동 시간
 
@@ -33,6 +44,36 @@ public class RecordListUI : MonoBehaviour
         // 버튼 이벤트 등록
         leftButton.onClick.AddListener(ScrollLeft);
         rightButton.onClick.AddListener(ScrollRight);
+
+
+        firstButton.onClick.AddListener(() => {
+            currentMoveIndex = 0;
+            ShowMovesUpTo(currentMoveIndex);
+        });
+
+        prevButton.onClick.AddListener(() => {
+            if (currentMoveIndex > 0)
+            {
+                currentMoveIndex--;
+                ShowMovesUpTo(currentMoveIndex);
+            }
+        });
+
+        nextButton.onClick.AddListener(() => {
+            if (currentMoveIndex < currentRecord.moves.Count)
+            {
+                currentMoveIndex++;
+                ShowMovesUpTo(currentMoveIndex);
+            }
+        });
+
+        lastButton.onClick.AddListener(() => {
+            currentMoveIndex = currentRecord.moves.Count;
+            ShowMovesUpTo(currentMoveIndex);
+        });
+
+        moveCounterText.text = "0/0"; // 초기 텍스트
+
 
         UpdateButtonVisibility();
     }
@@ -61,6 +102,7 @@ public class RecordListUI : MonoBehaviour
                 OnRecordSelected(capturedName);
             });
         }
+
     }
     private string FormatFileName(string fileName)
     {
@@ -86,31 +128,43 @@ public class RecordListUI : MonoBehaviour
         Debug.Log("기보 선택됨: " + fileName);
 
         // 실제 기보 불러오기
-        GameRecord record = recordManager.LoadRecord(fileName);
-        if (record != null)
+        currentRecord = recordManager.LoadRecord(fileName);
+
+
+        if (currentRecord != null)
         {
-            blockController.ClearBoard(); // 기존 돌 초기화
-
-            foreach (var move in record.moves)
-            {
-                Block.MarkerType marker = move.player == 1
-                    ? Block.MarkerType.BlackStone
-                    : Block.MarkerType.WhiteStone;
-
-                blockController.PlaceMaker(marker, move.y, move.x);
-
-                // 돌 위 숫자 표시
-                int blockIndex = move.y * Constants.BlockColumnCount + move.x;
-                Block block = blockController.GetBlock(blockIndex);
-                if (block != null)
-                {
-                    block.SetOrderNumber(move.order);
-                }
-            }
-
-
+            currentMoveIndex = currentRecord.moves.Count;
+            ShowMovesUpTo(currentMoveIndex);
         }
     }
+
+    void ShowMovesUpTo(int moveCount)
+    {
+        blockController.ClearBoard(); // 기존 돌 초기화
+
+        for (int i = 0; i < moveCount && i < currentRecord.moves.Count; i++)
+        {
+            var move = currentRecord.moves[i];
+            Block.MarkerType marker = move.player == 1
+                ? Block.MarkerType.BlackStone
+                : Block.MarkerType.WhiteStone;
+
+            blockController.PlaceMaker(marker, move.y, move.x);
+
+            int blockIndex = move.y * Constants.BlockColumnCount + move.x;
+            Block block = blockController.GetBlock(blockIndex);
+            if (block != null)
+            {
+                block.SetOrderNumber(move.order);
+            }
+        }
+
+        moveCounterText.text = $"{moveCount}/{currentRecord.moves.Count}";
+    }
+
+
+
+
 
     void ScrollLeft()
     {
