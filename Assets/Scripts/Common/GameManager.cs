@@ -72,6 +72,14 @@ public class GameManager : Singleton<GameManager>
         SceneManager.LoadScene("Game");
 
     }
+    public void ChangeToRecordScene()
+    {
+        _gameType = Constants.GameType.Record;
+        SceneManager.LoadScene("Record");
+
+    }
+
+
     public void SetAILoading(bool isActive)
     {
         _gameUIController.SetAILoading(isActive);
@@ -147,6 +155,14 @@ public class GameManager : Singleton<GameManager>
         _gameUIController?.InitTurnTimer(maxTime);
     }
 
+
+    public void SaveRecord(GameRecord record, string fileName)
+    {
+        string json = JsonUtility.ToJson(record, true);
+        string path = Application.dataPath + "/GameRecords/" + fileName + ".json";
+        System.IO.File.WriteAllText(path, json);
+        Debug.Log("Saved to " + path);
+    }
 }
 
 

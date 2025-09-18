@@ -22,17 +22,20 @@ public class GameUIController : MonoBehaviour
             return;
         }
 
-        switch(GameManager.Instance._gameType)
+        switch (GameManager.Instance._gameType)
         {
             case Constants.GameType.SinglePlay:
-            TopText.text = "싱글 플레이";
-            break;
+                TopText.text = "싱글 플레이";
+                break;
             case Constants.GameType.DualPlay:
-            TopText.text = "듀얼 플레이";
-            break;
+                TopText.text = "듀얼 플레이";
+                break;
             case Constants.GameType.MultiPlay:
-            TopText.text = "멀티 플레이";
-            break;
+                TopText.text = "멀티 플레이";
+                break;
+            case Constants.GameType.Record:
+                TopText.text = "기보";
+                break;
 
         }
 
@@ -50,6 +53,14 @@ public class GameUIController : MonoBehaviour
     public void OnClickBackBtn()
     {
         GameManager.Instance.OpenConfirmPanel(message: "게임을 종료하시겠습니까?", onConfirmButtonClicked: () =>
+        {
+            GameManager.Instance.ChangeToMainScene();
+        });
+
+    }
+    public void OnClickBackNotGameBtn()
+    {
+        GameManager.Instance.OpenConfirmPanel(message: "기보 보기를 종료하시겠습니까?", onConfirmButtonClicked: () =>
         {
             GameManager.Instance.ChangeToMainScene();
         });

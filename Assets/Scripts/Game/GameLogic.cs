@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using static Constants;
@@ -20,7 +21,6 @@ public class GameLogic
 
     private MultiplayController _multiplayController;
     private string _roomId;
-
 
     public Constants.PlayerType[,] GetBoard()
     {
@@ -186,12 +186,15 @@ public class GameLogic
             _turnTimerCoroutine = null;
         }
 
-
-
         SetState(null);
         firstPlayerState = null;
         secondPlayerState = null;
 
+
+        string fileName = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+        GameManager.Instance.SaveRecord(BlockController.gameRecord, fileName);
+        Debug.Log("게임 기록 저장 완료: " + fileName);
+    
 
         string resultMessage = "게임오버";
 

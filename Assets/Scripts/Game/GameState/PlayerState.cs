@@ -82,6 +82,14 @@ public class PlayerState : BasePlayerState
         // 공통: 블록 클릭 → 임시 착수 위치 저장
         gameLogic.BlockController.OnBlockClickedDelegate = (row, col) =>
         {
+            // 이미 돌이 있는 자리면 클릭 무시
+            if (board[row, col] != Constants.PlayerType.None)
+            {
+                Debug.Log("이미 돌이 있는 자리: " + row + ", " + col);
+                return;
+            }
+
+
             pendingRow = row;
             pendingCol = col;
 

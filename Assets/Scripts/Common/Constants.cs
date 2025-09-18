@@ -14,7 +14,7 @@ public class Constants : MonoBehaviour
         EndGame         // 상대방이 접속을 끊거나 방을 나갔을 때
     }
 
-    public enum GameType { SinglePlay, DualPlay, MultiPlay }
+    public enum GameType { SinglePlay, DualPlay, MultiPlay, Record }
     public enum PlayerType { None, PlayerA, PlayerB }
 
     public const int BlockColumnCount = 13;

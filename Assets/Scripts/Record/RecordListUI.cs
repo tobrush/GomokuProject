@@ -1,0 +1,164 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Globalization;
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
+
+public class RecordListUI : MonoBehaviour
+{
+    [SerializeField] private RecordManager recordManager;
+
+    [SerializeField] private BlockController blockController;
+
+    public GameObject recordButtonPrefab; // 버튼 프리팹
+    public Transform contentParent;       // ScrollView Content
+    public ScrollRect scrollRect;         // ScrollView
+    public Button leftButton;             // < 버튼
+    public Button rightButton;            // > 버튼
+
+    public float scrollStep = 0.2f;       // 버튼 클릭 시 이동 비율
+    public float moveDuration = 0.3f;     // 이동 시간
+
+    private List<string> fileNames;
+
+    private bool isMoving = false;        // 중복 이동 방지
+
+    void Start()
+    {
+        fileNames = recordManager.GetAllRecordFileNames();
+        PopulateList();
+
+        // 버튼 이벤트 등록
+        leftButton.onClick.AddListener(ScrollLeft);
+        rightButton.onClick.AddListener(ScrollRight);
+
+        UpdateButtonVisibility();
+    }
+
+    void Update()
+    {
+        UpdateButtonVisibility();
+    }
+
+
+    void PopulateList()
+    {
+        foreach (Transform child in contentParent)
+        {
+            Destroy(child.gameObject);
+        }
+
+        foreach (string fileName in fileNames)
+        {
+            GameObject btnObj = Instantiate(recordButtonPrefab, contentParent);
+            btnObj.GetComponentInChildren<TMP_Text>().text = FormatFileName(fileName);
+
+            string capturedName = fileName; // 클로저 방지
+            btnObj.GetComponent<Button>().onClick.AddListener(() =>
+            {
+                OnRecordSelected(capturedName);
+            });
+        }
+    }
+    private string FormatFileName(string fileName)
+    {
+        // 파일명이 "yyyyMMdd_HHmmss" 형태일 경우
+        if (DateTime.TryParseExact(
+            fileName,
+            "yyyyMMdd_HHmmss",
+            CultureInfo.InvariantCulture,
+            DateTimeStyles.None,
+            out DateTime dateTime))
+        {
+            // 원하는 출력 형식 (예: 2025년 9월 18일 16시 55분)
+            return dateTime.ToString("yyyy년\nM월 d일\nHH시 mm분");
+        }
+
+        // 혹시 파싱 실패하면 원래 문자열 리턴
+        return fileName;
+    }
+
+
+    void OnRecordSelected(string fileName)
+    {
+        Debug.Log("기보 선택됨: " + fileName);
+
+        // 실제 기보 불러오기
+        GameRecord record = recordManager.LoadRecord(fileName);
+        if (record != null)
+        {
+            blockController.ClearBoard(); // 기존 돌 초기화
+
+            foreach (var move in record.moves)
+            {
+                Block.MarkerType marker = move.player == 1
+                    ? Block.MarkerType.BlackStone
+                    : Block.MarkerType.WhiteStone;
+
+                blockController.PlaceMaker(marker, move.y, move.x);
+
+                // 돌 위 숫자 표시
+                int blockIndex = move.y * Constants.BlockColumnCount + move.x;
+                Block block = blockController.GetBlock(blockIndex);
+                if (block != null)
+                {
+                    block.SetOrderNumber(move.order);
+                }
+            }
+
+
+        }
+    }
+
+    void ScrollLeft()
+    {
+        if (!isMoving)
+            StartCoroutine(SmoothScroll(-scrollStep));
+    }
+
+    void ScrollRight()
+    {
+        if (!isMoving)
+            StartCoroutine(SmoothScroll(scrollStep));
+    }
+
+    private IEnumerator SmoothScroll(float step)
+    {
+        isMoving = true;
+
+        float start = scrollRect.horizontalNormalizedPosition;
+        float target = Mathf.Clamp01(start + step);
+
+        float t = 0f;
+        while (t < moveDuration)
+        {
+            t += Time.deltaTime;
+            float lerp = t / moveDuration;
+            // 부드럽게 가속/감속
+            scrollRect.horizontalNormalizedPosition = Mathf.Lerp(start, target, Mathf.SmoothStep(0f, 1f, lerp));
+            yield return null;
+        }
+
+        scrollRect.horizontalNormalizedPosition = target;
+        isMoving = false;
+    }
+
+
+    void UpdateButtonVisibility()
+    {
+        float contentWidth = scrollRect.content.rect.width;
+        float viewportWidth = scrollRect.viewport.rect.width;
+
+        if (contentWidth <= viewportWidth)
+        {
+            leftButton.gameObject.SetActive(false);
+            rightButton.gameObject.SetActive(false);
+            return;
+        }
+
+        leftButton.gameObject.SetActive(scrollRect.horizontalNormalizedPosition > 0.01f);
+        rightButton.gameObject.SetActive(scrollRect.horizontalNormalizedPosition < 0.99f);
+    }
+}

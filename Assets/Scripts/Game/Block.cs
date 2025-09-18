@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -9,6 +10,8 @@ using static ConfirmPanelController;
 [RequireComponent(typeof(SpriteRenderer))]
 public class Block : MonoBehaviour
 {
+    public TextMeshPro orderText;  // 돌 위에 표시할 수
+
     [SerializeField] private Sprite BlackStoneSprite;
     [SerializeField] private Sprite WhiteStoneSprite;
     [SerializeField] private Sprite ArrowSprite;
@@ -109,4 +112,16 @@ public class Block : MonoBehaviour
 
         _onBlockClicked?.Invoke(_blockIndex);
     }
+
+    public void SetOrderNumber(int number)
+    {
+        if (orderText != null)
+        {
+            orderText.text = number > 0 ? number.ToString() : "";
+            orderText.GetComponent<MeshRenderer>().sortingOrder = 10; // 돌보다 위
+            Debug.Log(number);
+        }
+          
+    }
+
 }

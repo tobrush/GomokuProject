@@ -13,6 +13,10 @@ public class BlockController : MonoBehaviour
 
     public BadukBoard board;
 
+    public GameRecord gameRecord = new GameRecord();
+    private int moveOrder = 1; // 착수 순서 추적용
+
+
 
     public delegate void OnBlockkClicked(int row, int col);
     public OnBlockkClicked OnBlockClickedDelegate;
@@ -67,6 +71,8 @@ public class BlockController : MonoBehaviour
     }
     public void PlaceMaker(Block.MarkerType markerType, int row, int col)
     {
+
+
         if (LastBlock != null)
         {
             if (LastBlock.nowSpriteRender.sprite != null)
@@ -74,10 +80,30 @@ public class BlockController : MonoBehaviour
                 LastBlock.nowSpriteRender.sprite = null;
             }
         }
+
+
         // row, col >> index 변환
         var blockIndex = row * Constants.BlockColumnCount + col;
         blocks[blockIndex].SetMarker(markerType);
         LastBlock = blocks[blockIndex];
+
+
+        if (markerType == Block.MarkerType.BlackStone || markerType == Block.MarkerType.WhiteStone)
+        {
+            // 마커 타입에 따라 플레이어 결정 (예: 흑=1, 백=2)
+            int player = markerType == Block.MarkerType.BlackStone ? 1 : 2;
+            // Move 객체 생성 및 기록
+            Move move = new Move
+            {
+                x = col,
+                y = row,
+                player = player,
+                order = moveOrder++
+            };
+            gameRecord.moves.Add(move);
+        }
+       
+
     }
 
     public void SetBlockColor()
@@ -90,6 +116,18 @@ public class BlockController : MonoBehaviour
         if (index >= 0 && index < blocks.Length)
             return blocks[index];
         return null;
+    }
+
+    public void ClearBoard()
+    {
+        foreach (var block in blocks)
+        {
+            block.SetMarker(Block.MarkerType.None);
+            block.SetOrderNumber(0);
+        }
+        LastBlock = null;
+        gameRecord = new GameRecord();
+        moveOrder = 1;
     }
 
 }

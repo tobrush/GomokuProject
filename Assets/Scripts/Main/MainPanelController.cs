@@ -14,9 +14,13 @@ public class MainPanelController : MonoBehaviour
     {
         GameManager.Instance.ChangeToGameScene(Constants.GameType.MultiPlay);
     }
+    public void OnClickRecordBtn()
+    {
+        GameManager.Instance.ChangeToRecordScene();
+    }
     public void OnClickSettingBtn()
     {
 
     }
-  
+
 }
