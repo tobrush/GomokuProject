@@ -83,26 +83,32 @@ public class RecordListUI : MonoBehaviour
         deleteButton.onClick.AddListener(OnDeleteButtonClicked);
     }
 
+
+
+
     private void OnDeleteButtonClicked()
     {
-        if (string.IsNullOrEmpty(selectedFileName)) return;
-
-        bool success = recordManager.DeleteRecord(selectedFileName);
-        if (success)
+        GameManager.Instance.OpenConfirmPanel(message: "해당 기보를 삭제하시겠습니까?", onConfirmButtonClicked: () =>
         {
-            // 버튼 제거
-            Destroy(selectedButtonObj);
+            if (string.IsNullOrEmpty(selectedFileName)) return;
 
-            // 보드 초기화
-            blockController.ClearBoard();
+            bool success = recordManager.DeleteRecord(selectedFileName);
+            if (success)
+            {
+                // 버튼 제거
+                Destroy(selectedButtonObj);
 
-            // 선택 초기화
-            selectedFileName = null;
-            selectedButtonObj = null;
+                // 보드 초기화
+                blockController.ClearBoard();
 
-            // 삭제 버튼 숨기기
-            deleteButton.gameObject.SetActive(false);
-        }
+                // 선택 초기화
+                selectedFileName = null;
+                selectedButtonObj = null;
+
+                // 삭제 버튼 숨기기
+                deleteButton.gameObject.SetActive(false);
+            }
+        });
     }
 
     void Update()
