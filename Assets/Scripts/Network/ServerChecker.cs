@@ -30,7 +30,7 @@ public class ServerChecker : MonoBehaviour
         }
             
 
-        //StartCoroutine(CheckServerStatus());
+        StartCoroutine(CheckServerStatus());
     }
 
     IEnumerator CheckServerStatus()

@@ -57,4 +57,20 @@ public class RecordManager : MonoBehaviour
         string json = System.IO.File.ReadAllText(path);
         return JsonUtility.FromJson<GameRecord>(json);
     }
+
+    public bool DeleteRecord(string fileName)
+    {
+        string path = Application.dataPath + "/GameRecords/" + fileName + ".json";
+        if (System.IO.File.Exists(path))
+        {
+            System.IO.File.Delete(path);
+            Debug.Log("기보 삭제됨: " + path);
+            return true;
+        }
+        else
+        {
+            Debug.LogWarning("삭제할 파일이 없음: " + path);
+            return false;
+        }
+    }
 }

@@ -9,7 +9,6 @@ using UnityEngine.UI;
 public class RecordListUI : MonoBehaviour
 {
     [SerializeField] private RecordManager recordManager;
-
     [SerializeField] private BlockController blockController;
 
     public GameObject recordButtonPrefab; // 버튼 프리팹
@@ -27,6 +26,9 @@ public class RecordListUI : MonoBehaviour
     private GameRecord currentRecord;
     private int currentMoveIndex = -1; // -1이면 아무 돌도 없음
 
+    private string selectedFileName = null;
+    private GameObject selectedButtonObj = null;
+    public Button deleteButton; // 화면 하단 중앙에 있는 삭제 버튼
 
 
     public float scrollStep = 0.2f;       // 버튼 클릭 시 이동 비율
@@ -38,7 +40,7 @@ public class RecordListUI : MonoBehaviour
 
     void Start()
     {
-        fileNames = recordManager.GetAllRecordFileNames();
+      
         PopulateList();
 
         // 버튼 이벤트 등록
@@ -76,6 +78,31 @@ public class RecordListUI : MonoBehaviour
 
 
         UpdateButtonVisibility();
+
+        deleteButton.gameObject.SetActive(false); // 처음엔 숨김
+        deleteButton.onClick.AddListener(OnDeleteButtonClicked);
+    }
+
+    private void OnDeleteButtonClicked()
+    {
+        if (string.IsNullOrEmpty(selectedFileName)) return;
+
+        bool success = recordManager.DeleteRecord(selectedFileName);
+        if (success)
+        {
+            // 버튼 제거
+            Destroy(selectedButtonObj);
+
+            // 보드 초기화
+            blockController.ClearBoard();
+
+            // 선택 초기화
+            selectedFileName = null;
+            selectedButtonObj = null;
+
+            // 삭제 버튼 숨기기
+            deleteButton.gameObject.SetActive(false);
+        }
     }
 
     void Update()
@@ -90,20 +117,22 @@ public class RecordListUI : MonoBehaviour
         {
             Destroy(child.gameObject);
         }
-
+        fileNames = recordManager.GetAllRecordFileNames();
+        int index = 1;
         foreach (string fileName in fileNames)
         {
             GameObject btnObj = Instantiate(recordButtonPrefab, contentParent);
-            btnObj.GetComponentInChildren<TMP_Text>().text = FormatFileName(fileName);
-
+            btnObj.GetComponentInChildren<TMP_Text>().text = "<Size=50><Color=Yellow>" + index + "</Size></Color>\n" + FormatFileName(fileName);
+            index++;
             string capturedName = fileName; // 클로저 방지
             btnObj.GetComponent<Button>().onClick.AddListener(() =>
             {
-                OnRecordSelected(capturedName);
+                OnRecordSelected(capturedName, btnObj);
             });
         }
-
+        scrollRect.horizontalNormalizedPosition = 1f;
     }
+
     private string FormatFileName(string fileName)
     {
         // 파일명이 "yyyyMMdd_HHmmss" 형태일 경우
@@ -123,8 +152,11 @@ public class RecordListUI : MonoBehaviour
     }
 
 
-    void OnRecordSelected(string fileName)
+    void OnRecordSelected(string fileName, GameObject buttonObj)
     {
+        selectedFileName = fileName;
+        selectedButtonObj = buttonObj;
+
         Debug.Log("기보 선택됨: " + fileName);
 
         // 실제 기보 불러오기
@@ -136,6 +168,7 @@ public class RecordListUI : MonoBehaviour
             currentMoveIndex = currentRecord.moves.Count;
             ShowMovesUpTo(currentMoveIndex);
         }
+        deleteButton.gameObject.SetActive(true);
     }
 
     void ShowMovesUpTo(int moveCount)
@@ -215,4 +248,5 @@ public class RecordListUI : MonoBehaviour
         leftButton.gameObject.SetActive(scrollRect.horizontalNormalizedPosition > 0.01f);
         rightButton.gameObject.SetActive(scrollRect.horizontalNormalizedPosition < 0.99f);
     }
+
 }

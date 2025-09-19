@@ -71,8 +71,6 @@ public class BlockController : MonoBehaviour
     }
     public void PlaceMaker(Block.MarkerType markerType, int row, int col)
     {
-
-
         if (LastBlock != null)
         {
             if (LastBlock.nowSpriteRender.sprite != null)
@@ -81,12 +79,10 @@ public class BlockController : MonoBehaviour
             }
         }
 
-
         // row, col >> index 변환
         var blockIndex = row * Constants.BlockColumnCount + col;
         blocks[blockIndex].SetMarker(markerType);
         LastBlock = blocks[blockIndex];
-
 
         if (markerType == Block.MarkerType.BlackStone || markerType == Block.MarkerType.WhiteStone)
         {
@@ -102,8 +98,6 @@ public class BlockController : MonoBehaviour
             };
             gameRecord.moves.Add(move);
         }
-       
-
     }
 
     public void SetBlockColor()
