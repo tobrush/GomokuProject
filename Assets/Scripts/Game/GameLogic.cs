@@ -22,6 +22,7 @@ public class GameLogic
     private MultiplayController _multiplayController;
     private string _roomId;
 
+
     public Constants.PlayerType[,] GetBoard()
     {
         return _board;
@@ -169,6 +170,16 @@ public class GameLogic
         }
         return false;
     }
+    public Constants.PlayerType CheckWinner()
+    {
+        if (GameAI.CheckGameWin(Constants.PlayerType.PlayerA, _board))
+            return Constants.PlayerType.PlayerA;
+        if (GameAI.CheckGameWin(Constants.PlayerType.PlayerB, _board))
+            return Constants.PlayerType.PlayerB;
+        if (GameAI.CheckGameDraw(_board))
+            return Constants.PlayerType.None; // 무승부
+        return Constants.PlayerType.None;
+    }
 
     public GameResult CheckGameResult()
     {
@@ -186,9 +197,20 @@ public class GameLogic
             _turnTimerCoroutine = null;
         }
 
+        
+        var winner = CheckWinner();
+
+        // 내가 흑인지 백인지 판정
+        bool isFirstPlayer = false;
+        if (_currentPlayerState is PlayerState ps)
+            isFirstPlayer = ps.IsFirstPlayer;
+        else if (_currentPlayerState is MultiPlayerState ms)
+            isFirstPlayer = ms.IsFirstPlayer;
+
+        //firstPlayerState = null;
+        //secondPlayerState = null;
+
         SetState(null);
-        firstPlayerState = null;
-        secondPlayerState = null;
 
 
         string fileName = DateTime.Now.ToString("yyyyMMdd_HHmmss");
@@ -236,22 +258,18 @@ public class GameLogic
                 }
                 break;
             case Constants.GameType.MultiPlay:
-                /*
-                switch (gameResult)
+
+                if (winner == Constants.PlayerType.None)
                 {
-                    case GameResult.None:
-                        resultMessage = "오류";
-                        break;
-                    case GameResult.Win:
-                        resultMessage = "승리";
-                        break;
-                    case GameResult.Lose:
-                        resultMessage = "패배";
-                        break;
-                    case GameResult.Draw:
-                        resultMessage = "비김";
-                        break;
-                }*/
+                    resultMessage = "무승부";
+                }
+                else
+                {
+                    bool iWon = (winner == Constants.PlayerType.PlayerA && isFirstPlayer) ||
+                                (winner == Constants.PlayerType.PlayerB && !isFirstPlayer);
+
+                    resultMessage = iWon ? "승리!" : "패배...";
+                }
                 break;
         }
       
@@ -261,6 +279,14 @@ public class GameLogic
             GameManager.Instance.OpenConfirmPanel(resultMessage, () =>
             {
                 GameManager.Instance.ChangeToMainScene();
+            });
+        }
+        else
+        {
+            GameManager.Instance.OpenConfirmPanel(resultMessage, () =>
+            {
+                GameManager.Instance.ChangeToMainScene();
+                //TODO 서버 점수 추가 + 점수결과확인
             });
         }
        

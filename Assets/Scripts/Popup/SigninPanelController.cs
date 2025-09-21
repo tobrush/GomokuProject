@@ -11,6 +11,10 @@ public struct SigninData
 public struct SigninResult
 {
     public int result;
+    public string nickname;    // ë‹‰ë„¤ìž„
+    public int level;          // ë ˆë²¨
+    public int coin;           // ì½”ì¸
+    public int score;          // ì ìˆ˜
 }
 
 public class SigninPanelController : PanelController
@@ -37,18 +41,22 @@ public class SigninPanelController : PanelController
             () =>
             {
                 Hide();
-                GameManager.Instance.multiPlayBtn.GetComponent<Button>().interactable = true;
 
-                GameManager.Instance.SignUpBtn.SetActive(false);
-                GameManager.Instance.SignInBtn.SetActive(false);
-                GameManager.Instance.SignOutBtn.SetActive(true);
+               // GameManager.Instance.NetworkLoggingPanel.SetActive(false);
+
+               // GameManager.Instance.NetworkMyID.text = "ID : " + "MyID"; //TODO
+
+              //  GameManager.Instance.NetworkUserPanel.SetActive(true);
+
+               // GameManager.Instance.multiPlayBtn.interactable = true;
+              //  GameManager.Instance.multiPlayBtn.GetComponent<Image>().sprite = GameManager.Instance.multiPlayOrange;
 
             },
             (result) =>
             {
                 if (result == 0)
                 {
-                    GameManager.Instance.OpenConfirmPanel("À¯Àú³×ÀÓÀÌ À¯È¿ÇÏÁö ¾Ê½À´Ï´Ù.",
+                    GameManager.Instance.OpenConfirmPanel("ìœ ì €ë„¤ìž„ì´ ìœ íš¨í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤.",
                         () =>
                         {
                             usernameInputField.text = "";
@@ -57,7 +65,7 @@ public class SigninPanelController : PanelController
                 }
                 else if (result == 1)
                 {
-                    GameManager.Instance.OpenConfirmPanel("ÆÐ½º¿öµå°¡ À¯È¿ÇÏÁö ¾Ê½À´Ï´Ù.",
+                    GameManager.Instance.OpenConfirmPanel("íŒ¨ìŠ¤ì›Œë“œê°€ ìœ íš¨í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤.",
                         () =>
                         {
                             passwordInputField.text = "";

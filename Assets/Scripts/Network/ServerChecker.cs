@@ -6,6 +6,10 @@ using UnityEngine.UI;
 
 public class ServerChecker : MonoBehaviour
 {
+    public Button MultiPlayBtn;
+    public Sprite MultiPlayBtn_Orange;
+    public Sprite MultiPlayBtn_Gray;
+
     [Header("서버 URL")]
     public string serverUrl = "https://gomokuprojectserver.onrender.com/ping";
    
@@ -13,13 +17,14 @@ public class ServerChecker : MonoBehaviour
     public TMP_Text statusText; // 대기중/접속가능 표시
     public Image readyIcon;
 
-    public Button multiPlayBtn;
-    public Sprite orangeBtnSprite;
-
     [Header("설정")]
     public float retryInterval = 5f; // 슬립 깨우기 재시도 간격
 
+    public System.Action OnServerReady; // 서버 준비되면 실행할 콜백
+
     private bool isServerReady = false;
+
+    public GameObject networkPanel;
 
     void Start()
     {
@@ -54,6 +59,9 @@ public class ServerChecker : MonoBehaviour
                     {
                         statusText.text = "서버 준비 완료! 접속 가능";
                         readyIcon.color = Color.green;
+
+                        
+                        OnServerReady?.Invoke(); // 자동 로그인 시도
                     }
                     EnableNetworkFeatures();
                 }
@@ -75,10 +83,24 @@ public class ServerChecker : MonoBehaviour
 
     void EnableNetworkFeatures()
     {
-        // Debug.Log("네트워크 기능 활성화됨.");
-        //TODO 버튼 활성화 / 자동로그인
+        networkPanel.SetActive(true);
+        MultiPlayBtn.interactable = true;
+        MultiPlayBtn.GetComponent<Image>().sprite = MultiPlayBtn_Orange;
 
-        multiPlayBtn.interactable = true;
-        multiPlayBtn.GetComponent<Image>().sprite = orangeBtnSprite;
+
+        // 자동 로그인 시도
+        StartCoroutine(NetworkManager.Instance.AutoSignin(
+            success: () =>
+            {
+                Debug.Log("자동 로그인 성공");
+               // GameManager.Instance.UpdateUserUI();
+            },
+            failure: (errorMsg) =>
+            {
+                networkPanel.SetActive(true);
+                Debug.LogWarning("자동 로그인 실패: " + errorMsg);
+               // GameManager.Instance.NetworkLoggingPanel.SetActive(true);
+              //  GameManager.Instance.NetworkUserPanel.SetActive(false);
+            }));
     }
 }

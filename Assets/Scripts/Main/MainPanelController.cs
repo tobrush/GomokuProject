@@ -22,5 +22,12 @@ public class MainPanelController : MonoBehaviour
     {
 
     }
-
+    public void OnClickSigninBtn()
+    {
+        GameManager.Instance.OpenSigninPanel();
+    }
+    public void OnClickSignupBtn()
+    {
+        GameManager.Instance.OpenSignupPanel();
+    }
 }

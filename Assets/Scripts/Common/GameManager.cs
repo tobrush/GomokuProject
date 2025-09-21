@@ -1,17 +1,17 @@
 using System.Collections;
+using TMPro;
 using Unity.Burst.CompilerServices;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using static Constants;
+using static NetworkManager;
 
 public class GameManager : Singleton<GameManager>
 {
+    [SerializeField] public MyData myData;
+
     public Constants.GameType _gameType;
-    [SerializeField] public GameObject SignUpBtn;
-    [SerializeField] public GameObject SignInBtn;
-    [SerializeField] public GameObject SignOutBtn;
-    [SerializeField] public GameObject multiPlayBtn;
 
     [SerializeField] private GameObject confrimPanel;
     [SerializeField] private GameObject signinPanel;
@@ -36,18 +36,6 @@ public class GameManager : Singleton<GameManager>
         IsPaused = false;
     }
 
-    private void Start()
-    {
-        // 로그인
-        var sid = PlayerPrefs.GetString("sid");
-        Debug.Log("SID: " + sid);
-
-        if (string.IsNullOrEmpty(sid))
-        {
-           // OpenSigninPanel();
-        }
-    }
-
     public void OpenSigninPanel()
     {
         if (_canvas != null)
@@ -63,6 +51,27 @@ public class GameManager : Singleton<GameManager>
             var signupPanelObject = Instantiate(signupPanel, _canvas.transform);
             signupPanelObject.GetComponent<SignupPanelController>().Show();
         }
+    }
+
+    public void OpenSignOutPanel()
+    {
+        GameManager.Instance.OpenConfirmPanel(message: "로그아웃하시겠습니까?", onConfirmButtonClicked: () =>
+        {
+            StartCoroutine(NetworkManager.Instance.Signout(
+                success: () =>
+                {
+                    Debug.Log("로그아웃 성공!");
+                   // NetworkLoggingPanel.SetActive(true);
+                   //  NetworkUserPanel.SetActive(false);
+                   //  multiPlayBtn.interactable = false;
+                   //  multiPlayBtn.GetComponent<Image>().sprite = multiPlayGray;
+                },
+                failure: (errorMsg) =>
+                {
+                   // Debug.LogError("로그아웃 실패: " + errorMsg);
+                   
+                }));
+        });
     }
 
     public void ChangeToGameScene(Constants.GameType gameType)
@@ -107,11 +116,24 @@ public class GameManager : Singleton<GameManager>
 
     }
 
+
+    public void UpdateUserUI()
+    {
+        Debug.Log(myData.nickname);
+       //  NetworkMyID.text = $"ID : {myData.nickname}";
+       // NetworkMyInfo.text = $"Lv: {myData.level} | Score: {myData.score} | Coin: {myData.coin}";
+       // multiPlayBtn.interactable = true;
+       // multiPlayBtn.GetComponent<Image>().sprite = multiPlayOrange;
+
+      //  NetworkLoggingPanel.SetActive(false);
+      //  NetworkUserPanel.SetActive(true);
+    }
+
     protected override void OnSceneLoad(Scene scene, LoadSceneMode mode)
     {
       _canvas = FindFirstObjectByType<Canvas>();
 
-        if(scene.name == "Game")
+        if (scene.name == "Game")
         {
             //block 초기화
             var blockController = FindFirstObjectByType<BlockController>();

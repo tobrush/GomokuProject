@@ -5,7 +5,7 @@ public class MultiPlayerState : BasePlayerState
     private Constants.PlayerType _playerType;
     private bool _isFirstPlayer;
     private MultiplayController _multiplayController;
-
+    public bool IsFirstPlayer { get; private set; }
     public MultiPlayerState(bool isFirstPlayer, MultiplayController multiplayController)
     {
         _isFirstPlayer = isFirstPlayer;

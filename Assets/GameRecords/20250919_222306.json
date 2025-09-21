@@ -1,0 +1,58 @@
+{
+    "moves": [
+        {
+            "x": 6,
+            "y": 6,
+            "player": 1,
+            "order": 1
+        },
+        {
+            "x": 8,
+            "y": 7,
+            "player": 2,
+            "order": 2
+        },
+        {
+            "x": 6,
+            "y": 5,
+            "player": 1,
+            "order": 3
+        },
+        {
+            "x": 8,
+            "y": 6,
+            "player": 2,
+            "order": 4
+        },
+        {
+            "x": 6,
+            "y": 4,
+            "player": 1,
+            "order": 5
+        },
+        {
+            "x": 8,
+            "y": 5,
+            "player": 2,
+            "order": 6
+        },
+        {
+            "x": 6,
+            "y": 3,
+            "player": 1,
+            "order": 7
+        },
+        {
+            "x": 8,
+            "y": 4,
+            "player": 2,
+            "order": 8
+        },
+        {
+            "x": 6,
+            "y": 2,
+            "player": 1,
+            "order": 9
+        }
+    ]
+}
