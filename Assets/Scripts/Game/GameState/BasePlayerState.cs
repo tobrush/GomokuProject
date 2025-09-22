@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public abstract class BasePlayerState 
@@ -26,6 +27,16 @@ public abstract class BasePlayerState
                 gameLogic.EndGame(gameResult);
             }
         }
+    }
+
+    internal void OnExit(SGameLogic sGameLogic)
+    {
+        throw new NotImplementedException();
+    }
+
+    internal void OnEnter(SGameLogic sGameLogic)
+    {
+        throw new NotImplementedException();
     }
 }
 

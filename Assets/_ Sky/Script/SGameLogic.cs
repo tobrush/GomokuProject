@@ -1,9 +1,8 @@
-using System;
 using UnityEngine;
 using static Constants;
 using static UnityEditor.Experimental.GraphView.GraphView;
 
-public class GameLogic
+public class SGameLogic
 {
     public BlockController BlockController;
 
@@ -26,7 +25,7 @@ public class GameLogic
     }
 
 
-    public GameLogic(BlockController blockController, Constants.GameType gameType)
+    public SGameLogic(BlockController blockController, Constants.GameType gameType)
     {
         BlockController = blockController;
 
@@ -37,7 +36,7 @@ public class GameLogic
         {
             case Constants.GameType.SinglePlay:
                 firstPlayerState = new PlayerState(true);
-                secondPlayerState = new SAIState();
+                secondPlayerState = new AIState();
 
                 SetState(firstPlayerState);
                 break;
@@ -100,14 +99,14 @@ public class GameLogic
         {
             _board[row, col] = playerType;
             BlockController.PlaceMaker(Block.MarkerType.BlackStone, row, col);
-       
+
             return true;
         }
         else if (playerType == Constants.PlayerType.PlayerB)
         {
             _board[row, col] = playerType;
             BlockController.PlaceMaker(Block.MarkerType.WhiteStone, row, col);
-           
+
             return true;
         }
         return false;
@@ -115,12 +114,12 @@ public class GameLogic
 
     public GameResult CheckGameResult()
     {
-        if (SGameAI.CheckGameWin(Constants.PlayerType.PlayerA, _board)) { return GameResult.Win; }
-        if (SGameAI.CheckGameWin(Constants.PlayerType.PlayerB, _board)) { return GameResult.Lose; }
-        if (SGameAI.CheckGameDraw(_board)) { return GameResult.Draw; }
+        if (GameAI.CheckGameWin(Constants.PlayerType.PlayerA, _board)) { return GameResult.Win; }
+        if (GameAI.CheckGameWin(Constants.PlayerType.PlayerB, _board)) { return GameResult.Lose; }
+        if (GameAI.CheckGameDraw(_board)) { return GameResult.Draw; }
         return GameResult.None;
     }
-   
+
     public void EndGame(GameResult gameResult)
     {
         SetState(null);
@@ -133,9 +132,7 @@ public class GameLogic
         switch (GameManager.Instance._gameType)
         {
             case Constants.GameType.SinglePlay:
-                resultMessage = ProcessSinglePlayResult(gameResult);
-                break;
-                /*
+
                 switch (gameResult)
                 {
                     case GameResult.None:
@@ -152,8 +149,6 @@ public class GameLogic
                         break;
                 }
                 break;
-                */
-
             case Constants.GameType.DualPlay:
                 switch (gameResult)
                 {
@@ -171,8 +166,8 @@ public class GameLogic
                         break;
                 }
                 break;
-
             case Constants.GameType.MultiPlay:
+                /*
                 switch (gameResult)
                 {
                     case GameResult.None:
@@ -187,31 +182,25 @@ public class GameLogic
                     case GameResult.Draw:
                         resultMessage = "비김";
                         break;
-                }
+                }*/
                 break;
         }
-      
- 
-        if(GameManager.Instance._gameType != Constants.GameType.MultiPlay)
+
+
+        if (GameManager.Instance._gameType != Constants.GameType.MultiPlay)
         {
             GameManager.Instance.OpenConfirmPanel(resultMessage, () =>
             {
                 GameManager.Instance.ChangeToMainScene();
             });
         }
-       
+
         //Debug.Log("게임 오버");
     }
 
-   /*
-    * private string ProcessSingPlayResult(GameResult gameResult)
-    {
-        throw new NotImplementedException();
-    }
-   */
-
+  
     // 추가 : 싱글 플레이 결과 처리 및 급수 변화
-    private string ProcessSinglePlayResult(GameResult gameResult)
+    private string ProcessSinglePlayerResult(GameResult gameResult)
     {
         string baseMessage = "";
         bool shouldProcessRank = true;

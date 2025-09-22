@@ -59,11 +59,9 @@ public static class SGameAI
     // 급수에 따른 AI 설정
     public static (int row, int col)? GetBestMove(Constants.PlayerType[,] board, int playerRank = 18)
     {
+        
         // 급수에 따른 AI 강도 조절
         var aiSettings = GetAISettings(playerRank);
-
-        float bestScore = float.MinValue;
-        (int row, int col) movePosition = (-1, -1);
 
         var candidates = GetCandidateMoves(board, aiSettings.searchRadius);
 
@@ -73,21 +71,31 @@ public static class SGameAI
             candidates = SortMovesByPriority(board, candidates);
         }
 
+        // 실수에 따른 랜덤 선택 로직
+        if (aiSettings.errorRate > 0)
+        {
+            float randomFactor = UnityEngine.Random.Range(0f, 1f);
+
+            if(randomFactor < aiSettings.errorRate)
+            {
+                Debug.Log("AI 실수 발생");
+                int randomIndex = UnityEngine.Random.Range(0, candidates.Count);
+                var randomMove = candidates[randomIndex];
+
+                return randomMove;
+            }
+        }
+
+        // 실수가 발생하지 않은 경우
+        Debug.Log(" AI 정상 동작 ");
+        float bestScore = float.MinValue;
+        (int row, int col) movePosition = (-1, -1);
+
         foreach (var (row, col) in candidates)
         {
             board[row, col] = Constants.PlayerType.PlayerB;
             var score = DoMiniMax(board, 0, false, aiSettings.maxDepth, aiSettings.useAlphaBeta);
             board[row, col] = Constants.PlayerType.None;
-
-            // 낮은 급수에서는 가끔 실수하도록 처리
-            if (aiSettings.errorRate > 0)
-            {
-                float randomFactor = UnityEngine.Random.Range(0f, 1f);
-                if (randomFactor < aiSettings.errorRate)
-                {
-                    score += UnityEngine.Random.Range(-500f, 500f); // 실수 요소 추가
-                }
-            }
 
             if (score > bestScore)
             {
@@ -122,30 +130,43 @@ public static class SGameAI
     // 급수에 따른 AI 설정 반환
     private static AISettings GetAISettings(int playerRank)
     {
-        if (playerRank >= 15) // 15급~18급: 매우 약함
+        Debug.Log($"GetAISettings 호출: 플레이어 급수 = {playerRank}급");
+
+        AISettings settings;
+
+        if (playerRank >= 16) // 16급~18급: 매우 쉬움
         {
-            return new AISettings(2, 0.3f, 1, false);
+            settings = new AISettings(1, 0.5f, 1, false); // depth=1, 실수율 50%
+            Debug.Log("AI 난이도: 매우 쉬움 (16-18급)");
         }
-        else if (playerRank >= 12) // 12급~14급: 약함
+        else if (playerRank >= 13) // 13급~15급: 쉬움
         {
-            return new AISettings(2, 0.2f, 1, true);
+            settings = new AISettings(1, 0.4f, 1, false); // depth=1, 실수율 40%
+            Debug.Log("AI 난이도: 쉬움 (13-15급)");
         }
-        else if (playerRank >= 8) // 8급~11급: 보통
+        else if (playerRank >= 10) // 10급~12급: 초급
         {
-            return new AISettings(3, 0.1f, 2, true);
+            settings = new AISettings(2, 0.3f, 1, true); // depth=2, 실수율 30%
+            Debug.Log("AI 난이도: 초급 (10-12급)");
         }
-        else if (playerRank >= 5) // 5급~7급: 중간
+        else if (playerRank >= 7) // 7급~9급: 중급
         {
-            return new AISettings(4, 0.05f, 2, true);
+            settings = new AISettings(2, 0.2f, 2, true); // depth=2, 실수율 20%
+            Debug.Log("AI 난이도: 중급 (7-9급)");
         }
-        else if (playerRank >= 3) // 3급~4급: 강함
+        else if (playerRank >= 4) // 4급~6급: 고급
         {
-            return new AISettings(5, 0.02f, 2, true);
+            settings = new AISettings(3, 0.1f, 2, true); // depth=3, 실수율 10%
+            Debug.Log("AI 난이도: 고급 (4-6급)");
         }
-        else // 1급~2급: 매우 강함
+        else // 1급~3급: 최고급
         {
-            return new AISettings(6, 0f, 2, true);
+            settings = new AISettings(4, 0.05f, 2, true); // depth=4, 실수율 5%
+            Debug.Log("AI 난이도: 최고급 (1-3급)");
         }
+
+        Debug.Log($"적용된 설정: depth={settings.maxDepth}, error={settings.errorRate}, radius={settings.searchRadius}, alphaBeta={settings.useAlphaBeta}");
+        return settings;
     }
 
     private static List<(int row, int col)> SortMovesByPriority(Constants.PlayerType[,] board, List<(int row, int col)> candidates)
