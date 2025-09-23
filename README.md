@@ -1,5 +1,5 @@
 # GomokuProject - Client
-Gomoku Game - HandsomeLion05 - TeamA11
+Gomoku Game
 
 
 ## 🎬 플레이 동영상 보기
